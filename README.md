@@ -1,7 +1,7 @@
 # Galeria de Assinaturas de E-mail
 
 > [!WARNING]
-> **⚠ Instrução Importante:** Clique na **imagem de prévia** abaixo para abrir o **arquivo HTML** da assinatura correspondente. 🖱️⚡
+> Clique na **imagem de prévia** abaixo para abrir o **arquivo HTML** da assinatura correspondente. 🖱️⚡
 ---
 
 ## ☁️ Air
