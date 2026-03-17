@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Assinaturas | Everymind & AI/R</title>
+    <style>
+        :root {
+            --primary: #000000;
+            --background: #f3f4f6;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --border: #e5e7eb;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        header h1 { margin: 0; font-size: 24px; }
+        header p { margin: 5px 0 0 0; font-size: 14px; opacity: 0.8; }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            width: 90%;
+            max-width: 1200px;
+            flex-wrap: wrap;
+        }
+
+        .painel {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .controles {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .controles h2 { margin-top: 0; font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 13px; font-weight: bold; color: #555; }
+        input, select {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus { border-color: var(--primary); }
+
+        .btn-copiar {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn-copiar:hover { background-color: #333; }
+        .btn-copiar:active { transform: scale(0.98); }
+
+        .preview-area {
+            flex: 2;
+            min-width: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-area h2 { margin-top: 0; font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+
+        .caixa-assinatura {
+            border: 2px dashed #ccc;
+            padding: 40px;
+            border-radius: 8px;
+            background-color: white;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: auto;
+        }
+
+        /* Pop-up de Sucesso (Toast) */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--success);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1000;
+            right: 30px;
+            bottom: 30px;
+            font-size: 15px;
+            font-weight: bold;
+            box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), visibility 0.4s;
+        }
+
+        #toast.mostrar { visibility: visible; transform: translateX(0); }
+
+        #barra-progresso {
+            position: absolute;
+            bottom: 0; left: 0;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.8);
+            width: 100%;
+        }
+
+        @keyframes diminuirBarra { from { width: 100%; } to { width: 0%; } }
+        #toast.mostrar #barra-progresso { animation: diminuirBarra 3s linear forwards; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Portal de Assinaturas</h1>
+        <p>Gere sua assinatura corporativa de forma rápida e padronizada</p>
+    </header>
+
+    <div class="container">
+        <div class="painel controles">
+            <h2>1. Seus Dados</h2>
+            
+            <div class="form-group">
+                <label>Nome Completo:</label>
+                <input type="text" id="inputNome" placeholder="Ex: Amanda Duarte Meneghini do Carmo" oninput="carregarAssinatura()">
+            </div>
+            
+            <div class="form-group">
+                <label>Cargo:</label>
+                <input type="text" id="inputCargo" placeholder="Ex: Analista Desenvolvedor Trainee | Everymind" oninput="carregarAssinatura()">
+            </div>
+
+            <h2 style="margin-top: 15px;">2. Modelo</h2>
+
+            <div class="form-group">
+                <label>Empresa:</label>
+                <select id="selectEmpresa" onchange="carregarAssinatura()">
+                    <option value="everymind">Everymind</option>
+                    <option value="air">Air (Padrão)</option>
+                </select>
+            </div>
+
+            <div id="opcoesEverymind" style="display: flex; flex-direction: column; gap: 15px;">
+                <div class="form-group">
+                    <label>Selo "Part of Air":</label>
+                    <select id="selectPartOfAir" onchange="carregarAssinatura()">
+                        <option value="com-part-of-air">Com "Part of Air"</option>
+                        <option value="sem-part-of-air">Sem "Part of Air"</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Rodapé da AI/R:</label>
+                    <select id="selectRodape" onchange="carregarAssinatura()">
+                        <option value="com-rodape-air">Com Rodapé Air</option>
+                        <option value="sem-rodape">Sem Rodapé</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Estilo do Logo:</label>
+                    <select id="selectLogo" onchange="carregarAssinatura()">
+                        <option value="original">Original (Colorido)</option>
+                        <option value="logo-todo-preto">Todo Preto</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-copiar" onclick="copiarAssinatura()">📋 Copiar Assinatura</button>
+        </div>
+
+        <div class="painel preview-area">
+            <h2>Prévia</h2>
+            <div class="caixa-assinatura" id="assinatura-preview">
+                <p style="color: #888;">Carregando modelo...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">
+        ✨ Assinatura copiada com sucesso!
+        <div id="barra-progresso"></div>
+    </div>
+
+    <script>
+        // O pulo do gato: Esta função busca o arquivo HTML correto nas suas pastas baseado no que foi selecionado
+        async function carregarAssinatura() {
+            const empresa = document.getElementById('selectEmpresa').value;
+            const opcoesEverymind = document.getElementById('opcoesEverymind');
+            
+            let caminhoArquivo = '';
+
+            // Lógica para montar o caminho do arquivo igualzinho ao seu README
+            if (empresa === 'air') {
+                opcoesEverymind.style.display = 'none';
+                caminhoArquivo = 'air/assinatura-air.html';
+            } else {
+                opcoesEverymind.style.display = 'flex';
+                const partOfAir = document.getElementById('selectPartOfAir').value;
+                const rodape = document.getElementById('selectRodape').value;
+                const logo = document.getElementById('selectLogo').value;
+                
+                caminhoArquivo = `everymind/${partOfAir}/${rodape}/${logo}/assinatura-everymind.html`;
+            }
+
+            // Pega os textos digitados ou usa o padrão
+            const nomeDigitado = document.getElementById('inputNome').value || 'Seu Nome Incrivel Aqui';
+            const cargoDigitado = document.getElementById('inputCargo').value || 'Analista Desenvolvedor Trainee | Everymind';
+
+            try {
+                // Faz a requisição para pegar o conteúdo do HTML da assinatura
+                const response = await fetch(caminhoArquivo);
+                if (!response.ok) throw new Error('Arquivo não encontrado');
+                
+                let htmlAssinatura = await response.text();
+
+                // Substitui os textos base pelo que a pessoa digitou (usando Regex para ignorar acentos e letras maiúsculas/minúsculas no HTML original)
+                htmlAssinatura = htmlAssinatura.replace(/Seu Nome Incr[ií]vel Aqui/gi, nomeDigitado);
+                htmlAssinatura = htmlAssinatura.replace(/Analista Desenvolvedor Trainee \| Everymind/gi, cargoDigitado);
+
+                // Injeta no preview
+                document.getElementById('assinatura-preview').innerHTML = htmlAssinatura;
+            } catch (error) {
+                console.error(error);
+                document.getElementById('assinatura-preview').innerHTML = `
+                    <p style="color: #ef4444; text-align: center;">
+                        <strong>Erro ao carregar a prévia.</strong><br>
+                        Caminho buscado: <code>${caminhoArquivo}</code><br><br>
+                        Dica: Lembre-se de rodar este arquivo usando o <strong>Live Server</strong> do VS Code!
+                    </p>`;
+            }
+        }
+
+        // Função para copiar com formatação
+        function copiarAssinatura() {
+            const assinatura = document.getElementById('assinatura-preview');
+            
+            const range = document.createRange();
+            range.selectNodeContents(assinatura); // Copia o conteúdo da caixa
+            
+            const selecao = window.getSelection();
+            selecao.removeAllRanges();
+            selecao.addRange(range);
+            
+            document.execCommand('copy');
+            selecao.removeAllRanges();
+            
+            // Ativa o Toast animado
+            const toast = document.getElementById("toast");
+            toast.classList.add("mostrar");
+            
+            setTimeout(function() {
+                toast.classList.remove("mostrar");
+            }, 3000);
+        }
+
+        // Carrega a assinatura padrão assim que a página abrir
+        window.onload = carregarAssinatura;
+    </script>
+</body>
+</html>
