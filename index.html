@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal de Assinaturas | Everymind & AI/R</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
         :root {
             --primary: #000000;
@@ -18,131 +21,87 @@
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--background);
             color: var(--text);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
 
         header {
-            background-color: var(--primary);
-            color: white;
-            width: 100%;
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+            background-color: var(--primary); color: white; width: 100%;
+            padding: 20px 0; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); margin-bottom: 30px;
         }
 
         header h1 { margin: 0; font-size: 24px; }
         header p { margin: 5px 0 0 0; font-size: 14px; opacity: 0.8; }
 
-        .container {
-            display: flex;
-            gap: 30px;
-            width: 90%;
-            max-width: 1200px;
-            flex-wrap: wrap;
-        }
+        .container { display: flex; gap: 30px; width: 90%; max-width: 1200px; flex-wrap: wrap; }
 
         .painel {
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            background-color: var(--card-bg); padding: 25px; border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .controles {
-            flex: 1;
-            min-width: 300px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
+        .controles { flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 15px; }
         .controles h2 { margin-top: 0; font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
 
         .form-group { display: flex; flex-direction: column; gap: 5px; }
         label { font-size: 13px; font-weight: bold; color: #555; }
         input, select {
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
+            padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; transition: 0.2s;
         }
         input:focus, select:focus { border-color: var(--primary); }
 
         .btn-copiar {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background-color 0.2s, transform 0.1s;
+            background-color: var(--primary); color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold;
+            border-radius: 6px; cursor: pointer; margin-top: 10px; transition: 0.2s;
         }
         .btn-copiar:hover { background-color: #333; }
-        .btn-copiar:active { transform: scale(0.98); }
 
-        .preview-area {
-            flex: 2;
-            min-width: 400px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .preview-area h2 { margin-top: 0; font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .preview-area { flex: 2; min-width: 400px; display: flex; flex-direction: column; position: relative; }
+        
+        .preview-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
+        .preview-header h2 { margin: 0; font-size: 18px; }
+        
+        /* Ícone de Ajuda no painel de prévia */
+        .btn-ajuda { background: none; border: none; color: #666; font-size: 20px; cursor: pointer; transition: 0.2s; }
+        .btn-ajuda:hover { color: var(--primary); transform: scale(1.1); }
 
         .caixa-assinatura {
-            border: 2px dashed #ccc;
-            padding: 40px;
-            border-radius: 8px;
-            background-color: white;
-            min-height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow-x: auto;
+            border: 2px dashed #ccc; padding: 40px; border-radius: 8px; background-color: white;
+            min-height: 150px; display: flex; align-items: center; justify-content: center; overflow-x: auto;
         }
 
-        /* Pop-up de Sucesso (Toast) */
+        /* --- MODAIS (BEM-VINDO E TUTORIAL) --- */
+        .modal-backdrop {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-backdrop.mostrar { display: flex; opacity: 1; }
+
+        .modal-conteudo {
+            background: white; padding: 30px; border-radius: 12px; max-width: 600px; width: 90%;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); position: relative;
+            transform: translateY(-20px); transition: transform 0.3s ease;
+        }
+        .modal-backdrop.mostrar .modal-conteudo { transform: translateY(0); }
+
+        .btn-fechar-modal {
+            position: absolute; top: 15px; right: 15px; background: none; border: none;
+            font-size: 20px; cursor: pointer; color: #888; transition: 0.2s;
+        }
+        .btn-fechar-modal:hover { color: var(--primary); }
+
+        .imagem-antes-depois { width: 100%; border-radius: 8px; border: 1px solid var(--border); margin: 15px 0; }
+
+        /* --- TOAST DE SUCESSO --- */
         #toast {
-            visibility: hidden;
-            min-width: 250px;
-            background-color: var(--success);
-            color: #fff;
-            text-align: center;
-            border-radius: 8px;
-            padding: 16px;
-            position: fixed;
-            z-index: 1000;
-            right: 30px;
-            bottom: 30px;
-            font-size: 15px;
-            font-weight: bold;
-            box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transform: translateX(120%);
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), visibility 0.4s;
+            visibility: hidden; min-width: 250px; background-color: var(--success); color: #fff; text-align: center;
+            border-radius: 8px; padding: 16px; position: fixed; z-index: 1000; right: 30px; bottom: 30px; font-size: 15px; font-weight: bold;
+            box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); overflow: hidden; transform: translateX(120%); transition: 0.4s;
         }
-
         #toast.mostrar { visibility: visible; transform: translateX(0); }
-
-        #barra-progresso {
-            position: absolute;
-            bottom: 0; left: 0;
-            height: 4px;
-            background-color: rgba(255, 255, 255, 0.8);
-            width: 100%;
-        }
-
+        #barra-progresso { position: absolute; bottom: 0; left: 0; height: 4px; background-color: rgba(255, 255, 255, 0.8); width: 100%; }
         @keyframes diminuirBarra { from { width: 100%; } to { width: 0%; } }
         #toast.mostrar #barra-progresso { animation: diminuirBarra 3s linear forwards; }
     </style>
@@ -157,58 +116,56 @@
     <div class="container">
         <div class="painel controles">
             <h2>1. Seus Dados</h2>
-            
             <div class="form-group">
                 <label>Nome Completo:</label>
-                <input type="text" id="inputNome" placeholder="Ex: Amanda Duarte Meneghini do Carmo" oninput="carregarAssinatura()">
+                <input type="text" id="inputNome" placeholder="Ex: Amanda Duarte Meneghini do Carmo" oninput="atualizarE_Salvar()">
             </div>
-            
             <div class="form-group">
                 <label>Cargo:</label>
-                <input type="text" id="inputCargo" placeholder="Ex: Analista Desenvolvedor Trainee | Everymind" oninput="carregarAssinatura()">
+                <input type="text" id="inputCargo" placeholder="Ex: Analista Desenvolvedor Trainee | Everymind" oninput="atualizarE_Salvar()">
             </div>
 
             <h2 style="margin-top: 15px;">2. Modelo</h2>
-
             <div class="form-group">
                 <label>Empresa:</label>
-                <select id="selectEmpresa" onchange="carregarAssinatura()">
+                <select id="selectEmpresa" onchange="atualizarE_Salvar()">
                     <option value="everymind">Everymind</option>
                     <option value="air">Air (Padrão)</option>
                 </select>
             </div>
-
             <div id="opcoesEverymind" style="display: flex; flex-direction: column; gap: 15px;">
                 <div class="form-group">
                     <label>Selo "Part of Air":</label>
-                    <select id="selectPartOfAir" onchange="carregarAssinatura()">
+                    <select id="selectPartOfAir" onchange="atualizarE_Salvar()">
                         <option value="com-part-of-air">Com "Part of Air"</option>
                         <option value="sem-part-of-air">Sem "Part of Air"</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label>Rodapé da AI/R:</label>
-                    <select id="selectRodape" onchange="carregarAssinatura()">
+                    <select id="selectRodape" onchange="atualizarE_Salvar()">
                         <option value="com-rodape-air">Com Rodapé Air</option>
                         <option value="sem-rodape">Sem Rodapé</option>
                     </select>
                 </div>
-
                 <div class="form-group">
                     <label>Estilo do Logo:</label>
-                    <select id="selectLogo" onchange="carregarAssinatura()">
+                    <select id="selectLogo" onchange="atualizarE_Salvar()">
                         <option value="original">Original (Colorido)</option>
                         <option value="logo-todo-preto">Todo Preto</option>
                     </select>
                 </div>
             </div>
-
-            <button class="btn-copiar" onclick="copiarAssinatura()">📋 Copiar Assinatura</button>
+            <button class="btn-copiar" onclick="copiarAssinatura()"><i class="fa-regular fa-copy"></i> Copiar Assinatura</button>
         </div>
 
         <div class="painel preview-area">
-            <h2>Prévia</h2>
+            <div class="preview-header">
+                <h2>Prévia</h2>
+                <button class="btn-ajuda" onclick="abrirModal('modalTutorial')" title="Como instalar no Outlook?">
+                    <i class="fa-solid fa-circle-question"></i>
+                </button>
+            </div>
             <div class="caixa-assinatura" id="assinatura-preview">
                 <p style="color: #888;">Carregando modelo...</p>
             </div>
@@ -220,15 +177,69 @@
         <div id="barra-progresso"></div>
     </div>
 
+    <div class="modal-backdrop" id="modalBemVindo" onclick="fecharAoClicarFora(event, 'modalBemVindo')">
+        <div class="modal-conteudo">
+            <button class="btn-fechar-modal" onclick="fecharModal('modalBemVindo')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 style="margin-top: 0;"><i class="fa-solid fa-wand-magic-sparkles"></i> Bem-vindo ao novo gerador!</h2>
+            <p>Diga adeus àquelas linhas de tabela indesejadas no modo escuro e aos problemas de formatação. Configure sua assinatura moderna, limpa e padronizada em segundos.</p>
+            
+            <img src="./assets/readme/antes-depois.png" alt="Comparação da assinatura antiga com a nova" class="imagem-antes-depois">
+            
+            <button class="btn-copiar" style="width: 100%;" onclick="fecharModal('modalBemVindo')">Começar a usar</button>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="modalTutorial" onclick="fecharAoClicarFora(event, 'modalTutorial')">
+        <div class="modal-conteudo">
+            <button class="btn-fechar-modal" onclick="fecharModal('modalTutorial')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 style="margin-top: 0;"><i class="fa-solid fa-envelope-open-text"></i> Como colocar no Outlook</h2>
+            <p>Sua assinatura já está copiada! Siga estes passos rápidos para ativá-la no Outlook Web:</p>
+            <ol style="line-height: 1.6;">
+                <li>Abra o Outlook no navegador e clique na engrenagem de <strong>Configurações</strong> <i class="fa-solid fa-gear"></i>.</li>
+                <li>Vá em <strong>Contas</strong> > <strong>Assinaturas</strong>.</li>
+                <li>Clique em <strong>+ Adicionar assinatura</strong> e dê um nome a ela.</li>
+                <li>Clique na caixa de texto em branco e cole (<strong>Ctrl + V</strong>).</li>
+                <li>Marque as caixas para definir como padrão para novas mensagens e respostas.</li>
+                <li>Clique em <strong>Salvar</strong> e pronto!</li>
+            </ol>
+            <button class="btn-copiar" style="width: 100%; background-color: #333;" onclick="fecharModal('modalTutorial')">Entendi!</button>
+        </div>
+    </div>
+
     <script>
-        // O pulo do gato: Esta função busca o arquivo HTML correto nas suas pastas baseado no que foi selecionado
-        async function carregarAssinatura() {
+        // --- GERENCIAMENTO DO LOCALSTORAGE (CACHE) ---
+        function carregarDadosSalvos() {
+            const dados = JSON.parse(localStorage.getItem('dadosAssinaturaEverymind'));
+            if (dados) {
+                if(dados.nome) document.getElementById('inputNome').value = dados.nome;
+                if(dados.cargo) document.getElementById('inputCargo').value = dados.cargo;
+                if(dados.empresa) document.getElementById('selectEmpresa').value = dados.empresa;
+                if(dados.partOfAir) document.getElementById('selectPartOfAir').value = dados.partOfAir;
+                if(dados.rodape) document.getElementById('selectRodape').value = dados.rodape;
+                if(dados.logo) document.getElementById('selectLogo').value = dados.logo;
+            }
+        }
+
+        function salvarDadosEmCache() {
+            const dados = {
+                nome: document.getElementById('inputNome').value,
+                cargo: document.getElementById('inputCargo').value,
+                empresa: document.getElementById('selectEmpresa').value,
+                partOfAir: document.getElementById('selectPartOfAir').value,
+                rodape: document.getElementById('selectRodape').value,
+                logo: document.getElementById('selectLogo').value
+            };
+            localStorage.setItem('dadosAssinaturaEverymind', JSON.stringify(dados));
+        }
+
+        // --- LÓGICA DA ASSINATURA ---
+        async function atualizarE_Salvar() {
+            salvarDadosEmCache(); // Salva no cache sempre que algo muda
+            
             const empresa = document.getElementById('selectEmpresa').value;
             const opcoesEverymind = document.getElementById('opcoesEverymind');
-            
             let caminhoArquivo = '';
 
-            // Lógica para montar o caminho do arquivo igualzinho ao seu README
             if (empresa === 'air') {
                 opcoesEverymind.style.display = 'none';
                 caminhoArquivo = 'air/assinatura-air.html';
@@ -237,63 +248,65 @@
                 const partOfAir = document.getElementById('selectPartOfAir').value;
                 const rodape = document.getElementById('selectRodape').value;
                 const logo = document.getElementById('selectLogo').value;
-                
                 caminhoArquivo = `everymind/${partOfAir}/${rodape}/${logo}/assinatura-everymind.html`;
             }
 
-            // Pega os textos digitados ou usa o padrão
             const nomeDigitado = document.getElementById('inputNome').value || 'Seu Nome Incrivel Aqui';
             const cargoDigitado = document.getElementById('inputCargo').value || 'Analista Desenvolvedor Trainee | Everymind';
 
             try {
-                // Faz a requisição para pegar o conteúdo do HTML da assinatura
                 const response = await fetch(caminhoArquivo);
                 if (!response.ok) throw new Error('Arquivo não encontrado');
-                
                 let htmlAssinatura = await response.text();
 
-                // Substitui os textos base pelo que a pessoa digitou (usando Regex para ignorar acentos e letras maiúsculas/minúsculas no HTML original)
                 htmlAssinatura = htmlAssinatura.replace(/Seu Nome Incr[ií]vel Aqui/gi, nomeDigitado);
                 htmlAssinatura = htmlAssinatura.replace(/Analista Desenvolvedor Trainee \| Everymind/gi, cargoDigitado);
 
-                // Injeta no preview
                 document.getElementById('assinatura-preview').innerHTML = htmlAssinatura;
             } catch (error) {
                 console.error(error);
-                document.getElementById('assinatura-preview').innerHTML = `
-                    <p style="color: #ef4444; text-align: center;">
-                        <strong>Erro ao carregar a prévia.</strong><br>
-                        Caminho buscado: <code>${caminhoArquivo}</code><br><br>
-                        Dica: Lembre-se de rodar este arquivo usando o <strong>Live Server</strong> do VS Code!
-                    </p>`;
+                document.getElementById('assinatura-preview').innerHTML = `<p style="color: red;">Erro ao carregar prévia. Use o Live Server!</p>`;
             }
         }
 
-        // Função para copiar com formatação
         function copiarAssinatura() {
             const assinatura = document.getElementById('assinatura-preview');
-            
             const range = document.createRange();
-            range.selectNodeContents(assinatura); // Copia o conteúdo da caixa
-            
+            range.selectNodeContents(assinatura);
             const selecao = window.getSelection();
             selecao.removeAllRanges();
             selecao.addRange(range);
-            
             document.execCommand('copy');
             selecao.removeAllRanges();
             
-            // Ativa o Toast animado
             const toast = document.getElementById("toast");
             toast.classList.add("mostrar");
-            
-            setTimeout(function() {
-                toast.classList.remove("mostrar");
-            }, 3000);
+            setTimeout(() => toast.classList.remove("mostrar"), 3000);
+
+            // Abre o modal de tutorial logo após a pessoa copiar a assinatura
+            setTimeout(() => abrirModal('modalTutorial'), 500);
         }
 
-        // Carrega a assinatura padrão assim que a página abrir
-        window.onload = carregarAssinatura;
+        // --- CONTROLE DE MODAIS ---
+        function abrirModal(id) { document.getElementById(id).classList.add('mostrar'); }
+        function fecharModal(id) { document.getElementById(id).classList.remove('mostrar'); }
+        
+        // Fecha se clicar na área borrada (fora do conteúdo branco)
+        function fecharAoClicarFora(evento, id) {
+            if (evento.target.id === id) fecharModal(id);
+        }
+
+        // --- INICIALIZAÇÃO AO ABRIR A PÁGINA ---
+        window.onload = function() {
+            carregarDadosSalvos(); // Traz os dados do cache
+            atualizarE_Salvar(); // Carrega o HTML na tela
+
+            // Verifica se é a primeira visita para exibir o Bem-Vindo
+            if (!localStorage.getItem('boasVindasMostrado')) {
+                setTimeout(() => abrirModal('modalBemVindo'), 500);
+                localStorage.setItem('boasVindasMostrado', 'true');
+            }
+        };
     </script>
 </body>
 </html>
