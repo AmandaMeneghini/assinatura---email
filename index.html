@@ -81,7 +81,7 @@
         .modal-backdrop.mostrar { display: flex; opacity: 1; }
 
         .modal-conteudo {
-            background: white; padding: 30px; border-radius: 12px; max-width: 600px; width: 90%;
+            background: #f4f4f4; padding: 30px; border-radius: 12px; max-width: 600px; width: 90%;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); position: relative;
             transform: translateY(-20px); transition: transform 0.3s ease;
         }
@@ -93,7 +93,7 @@
         }
         .btn-fechar-modal:hover { color: var(--primary); }
 
-        .imagem-antes-depois { width: 100%; border-radius: 8px; border: 1px solid var(--border); margin: 15px 0; }
+        .imagem-antes-depois { width: 100%; border-radius: 8px; margin: 15px 0; }
 
         /* --- TOAST DE SUCESSO --- */
         #toast {
@@ -123,7 +123,7 @@
             </div>
             <div class="form-group">
                 <label>Cargo:</label>
-                <input type="text" id="inputCargo" placeholder="Ex: Cargo Maneiro | Everymind" oninput="atualizarE_Salvar()">
+                <input type="text" id="inputCargo" placeholder="Ex: Cargo Maneiro" oninput="atualizarE_Salvar()">
             </div>
 
             <h2 style="margin-top: 15px;">2. Modelo</h2>
@@ -185,7 +185,7 @@
             <h2 style="margin-top: 0;"><i class="fa-solid fa-wand-magic-sparkles"></i> Bem-vindo ao novo gerador!</h2>
             <p>Diga adeus àquelas linhas de tabela indesejadas no modo escuro e aos problemas de formatação. Configure sua assinatura moderna, limpa e padronizada em segundos.</p>
             
-            <img src="./assets/readme/antes-depois.png" alt="Comparação da assinatura antiga com a nova" class="imagem-antes-depois">
+            <img src="./assets/antes-depois.png" alt="Comparação da assinatura antiga com a nova" class="imagem-antes-depois">
             
             <button class="btn-copiar" style="width: 100%;" onclick="fecharModal('modalBemVindo')">Começar a usar</button>
         </div>
@@ -389,10 +389,10 @@
 
             // Modal de boas vindas forçado a aparecer para você editar.
             // Quando terminar, apague a linha do setTimeout abaixo e descomente o IF
-            // (!localStorage.getItem('boasVindasMostrado')) {
+            if (!localStorage.getItem('boasVindasMostrado')) {
                 setTimeout(() => abrirModal('modalBemVindo'), 100);
-                // localStorage.setItem('boasVindasMostrado', 'true');
-            // }
+                localStorage.setItem('boasVindasMostrado', 'true');
+            }
         };
     </script>
 </body>
