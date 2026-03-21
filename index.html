@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal de Assinaturas | Everymind & AI/R</title>
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -21,92 +22,270 @@
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--background);
             color: var(--text);
-            margin: 0; padding: 0;
-            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
 
         header {
-            background-color: var(--primary); color: white; width: 100%;
-            padding: 20px 0; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); margin-bottom: 30px;
+            background-color: var(--primary);
+            color: white;
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
         }
 
-        header h1 { margin: 0; font-size: 24px; }
-        header p { margin: 5px 0 0 0; font-size: 14px; opacity: 0.8; }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
 
-        .container { display: flex; gap: 30px; width: 90%; max-width: 1200px; flex-wrap: wrap; }
+        header p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            width: 90%;
+            max-width: 1200px;
+            flex-wrap: wrap;
+        }
 
         .painel {
-            background-color: var(--card-bg); padding: 25px; border-radius: 12px;
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .controles { flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 15px; }
-        .controles h2 { margin-top: 0; font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 13px; font-weight: bold; color: #555; }
-        input, select {
-            padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; transition: 0.2s;
+        .controles {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
-        input:focus, select:focus { border-color: var(--primary); }
+
+        .controles h2 {
+            margin-top: 0;
+            font-size: 18px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input,
+        select {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary);
+        }
 
         .btn-copiar {
-            background-color: var(--primary); color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold;
-            border-radius: 6px; cursor: pointer; margin-top: 10px; transition: 0.2s;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
         }
-        .btn-copiar:hover { background-color: #333; }
 
-        .preview-area { flex: 2; min-width: 400px; display: flex; flex-direction: column; position: relative; }
-        
-        .preview-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
-        .preview-header h2 { margin: 0; font-size: 18px; }
-        
+        .btn-copiar:hover {
+            background-color: #333;
+        }
+
+        .preview-area {
+            flex: 2;
+            min-width: 400px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .preview-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
         /* Ícone de Ajuda no painel de prévia */
-        .btn-ajuda { background: none; border: none; color: #666; font-size: 20px; cursor: pointer; transition: 0.2s; }
-        .btn-ajuda:hover { color: var(--primary); transform: scale(1.1); }
+        .btn-ajuda {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-ajuda:hover {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
 
         /* MUDANÇA AQUI: Removi o flexbox complicado e coloquei block com largura 100% para não bugar a tabela */
         .caixa-assinatura {
-            border: 2px dashed #ccc; padding: 40px; border-radius: 8px; background-color: white;
-            min-height: 150px; display: block; overflow-x: auto; width: 100%; box-sizing: border-box;
+            border: 2px dashed #ccc;
+            padding: 40px;
+            border-radius: 8px;
+            background-color: white;
+            min-height: 150px;
+            display: block;
+            overflow-x: auto;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         /* --- MODAIS (BEM-VINDO E TUTORIAL) --- */
         .modal-backdrop {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
-            z-index: 2000; display: none; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .modal-backdrop.mostrar { display: flex; opacity: 1; }
+
+        .modal-backdrop.mostrar {
+            display: flex;
+            opacity: 1;
+        }
 
         .modal-conteudo {
-            background: #f4f4f4; padding: 30px; border-radius: 12px; max-width: 600px; width: 90%;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); position: relative;
-            transform: translateY(-20px); transition: transform 0.3s ease;
+            background: #f4f4f4;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
         }
-        .modal-backdrop.mostrar .modal-conteudo { transform: translateY(0); }
+
+        .modal-backdrop.mostrar .modal-conteudo {
+            transform: translateY(0);
+        }
 
         .btn-fechar-modal {
-            position: absolute; top: 15px; right: 15px; background: none; border: none;
-            font-size: 20px; cursor: pointer; color: #888; transition: 0.2s;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #888;
+            transition: 0.2s;
         }
-        .btn-fechar-modal:hover { color: var(--primary); }
 
-        .imagem-antes-depois { width: 100%; border-radius: 8px; margin: 15px 0; }
+        .btn-fechar-modal:hover {
+            color: var(--primary);
+        }
+
+        .imagem-antes-depois {
+            width: 100%;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
 
         /* --- TOAST DE SUCESSO --- */
         #toast {
-            visibility: hidden; min-width: 250px; background-color: var(--success); color: #fff; text-align: center;
-            border-radius: 8px; padding: 16px; position: fixed; z-index: 1000; right: 30px; bottom: 30px; font-size: 15px; font-weight: bold;
-            box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1); overflow: hidden; transform: translateX(120%); transition: 0.4s;
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--success);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 3000;
+            right: 30px;
+            bottom: 30px;
+            font-size: 15px;
+            font-weight: bold;
+            box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transform: translateX(120%);
+            transition: 0.4s;
         }
-        #toast.mostrar { visibility: visible; transform: translateX(0); }
-        #barra-progresso { position: absolute; bottom: 0; left: 0; height: 4px; background-color: rgba(255, 255, 255, 0.8); width: 100%; }
-        @keyframes diminuirBarra { from { width: 100%; } to { width: 0%; } }
-        #toast.mostrar #barra-progresso { animation: diminuirBarra 3s linear forwards; }
+
+        #toast.mostrar {
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        #barra-progresso {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.8);
+            width: 100%;
+        }
+
+        @keyframes diminuirBarra {
+            from {
+                width: 100%;
+            }
+
+            to {
+                width: 0%;
+            }
+        }
+
+        #toast.mostrar #barra-progresso {
+            animation: diminuirBarra 3s linear forwards;
+        }
     </style>
 </head>
+
 <body>
 
     <header>
@@ -119,7 +298,8 @@
             <h2>1. Seus Dados</h2>
             <div class="form-group">
                 <label>Nome Completo:</label>
-                <input type="text" id="inputNome" placeholder="Ex: Seu Nome Incrível Aqui" oninput="atualizarE_Salvar()">
+                <input type="text" id="inputNome" placeholder="Ex: Seu Nome Incrível Aqui"
+                    oninput="atualizarE_Salvar()">
             </div>
             <div class="form-group">
                 <label>Cargo:</label>
@@ -158,7 +338,8 @@
                     </select>
                 </div>
             </div>
-            <button class="btn-copiar" onclick="copiarAssinatura()"><i class="fa-regular fa-copy"></i> Copiar Assinatura</button>
+            <button class="btn-copiar" onclick="copiarAssinatura()"><i class="fa-regular fa-copy"></i> Copiar
+                Assinatura</button>
         </div>
 
         <div class="painel preview-area">
@@ -181,30 +362,37 @@
 
     <div class="modal-backdrop" id="modalBemVindo" onclick="fecharAoClicarFora(event, 'modalBemVindo')">
         <div class="modal-conteudo">
-            <button class="btn-fechar-modal" onclick="fecharModal('modalBemVindo')"><i class="fa-solid fa-xmark"></i></button>
+            <button class="btn-fechar-modal" onclick="fecharModal('modalBemVindo')"><i
+                    class="fa-solid fa-xmark"></i></button>
             <h2 style="margin-top: 0;"><i class="fa-solid fa-wand-magic-sparkles"></i> Bem-vindo ao novo gerador!</h2>
-            <p>Diga adeus àquelas linhas de tabela indesejadas no modo escuro e aos problemas de formatação. Configure sua assinatura moderna, limpa e padronizada em segundos.</p>
-            
-            <img src="./assets/antes-depois-v2.png" alt="Comparação da assinatura antiga com a nova" class="imagem-antes-depois">
-            
-            <button class="btn-copiar" style="width: 100%;" onclick="fecharModal('modalBemVindo')">Começar a usar</button>
+            <p>Diga adeus àquelas linhas de tabela indesejadas no modo escuro e aos problemas de formatação. Configure
+                sua assinatura moderna, limpa e padronizada em segundos.</p>
+
+            <img src="./assets/antes-depois-v2.png" alt="Comparação da assinatura antiga com a nova"
+                class="imagem-antes-depois">
+
+            <button class="btn-copiar" style="width: 100%;" onclick="fecharModal('modalBemVindo')">Começar a
+                usar</button>
         </div>
     </div>
 
     <div class="modal-backdrop" id="modalTutorial" onclick="fecharAoClicarFora(event, 'modalTutorial')">
         <div class="modal-conteudo">
-            <button class="btn-fechar-modal" onclick="fecharModal('modalTutorial')"><i class="fa-solid fa-xmark"></i></button>
+            <button class="btn-fechar-modal" onclick="fecharModal('modalTutorial')"><i
+                    class="fa-solid fa-xmark"></i></button>
             <h2 style="margin-top: 0;"><i class="fa-solid fa-envelope-open-text"></i> Como colocar no Outlook</h2>
             <p>Sua assinatura já está copiada! Siga estes passos rápidos para ativá-la no Outlook Web:</p>
             <ol style="line-height: 1.6;">
-                <li>Abra o Outlook no navegador e clique na engrenagem de <strong>Configurações</strong> <i class="fa-solid fa-gear"></i>.</li>
+                <li>Abra o Outlook no navegador e clique na engrenagem de <strong>Configurações</strong> <i
+                        class="fa-solid fa-gear"></i>.</li>
                 <li>Vá em <strong>Conta</strong> > <strong>Assinaturas</strong>.</li>
                 <li>Clique em <strong>+ Adicionar assinatura</strong> e dê um nome a ela.</li>
                 <li>Clique na caixa de texto e cole (<strong>Ctrl + V</strong>).</li>
                 <li>Marque as caixas para definir como padrão para novas mensagens e respostas. (opcional)</li>
                 <li>Clique em <strong>Salvar</strong> e pronto!</li>
             </ol>
-            <button class="btn-copiar" style="width: 100%; background-color: #333;" onclick="fecharModal('modalTutorial')">Entendi!</button>
+            <button class="btn-copiar" style="width: 100%; background-color: #333;"
+                onclick="fecharModal('modalTutorial')">Entendi!</button>
         </div>
     </div>
 
@@ -212,12 +400,12 @@
         function carregarDadosSalvos() {
             const dados = JSON.parse(localStorage.getItem('dadosAssinaturaEverymind'));
             if (dados) {
-                if(dados.nome) document.getElementById('inputNome').value = dados.nome;
-                if(dados.cargo) document.getElementById('inputCargo').value = dados.cargo;
-                if(dados.empresa) document.getElementById('selectEmpresa').value = dados.empresa;
-                if(dados.partOfAir) document.getElementById('selectPartOfAir').value = dados.partOfAir;
-                if(dados.rodape) document.getElementById('selectRodape').value = dados.rodape;
-                if(dados.logo) document.getElementById('selectLogo').value = dados.logo;
+                if (dados.nome) document.getElementById('inputNome').value = dados.nome;
+                if (dados.cargo) document.getElementById('inputCargo').value = dados.cargo;
+                if (dados.empresa) document.getElementById('selectEmpresa').value = dados.empresa;
+                if (dados.partOfAir) document.getElementById('selectPartOfAir').value = dados.partOfAir;
+                if (dados.rodape) document.getElementById('selectRodape').value = dados.rodape;
+                if (dados.logo) document.getElementById('selectLogo').value = dados.logo;
             }
         }
 
@@ -283,7 +471,7 @@
             }
 
             salvarDadosEmCache();
-            
+
             const empresa = document.getElementById('selectEmpresa').value;
             const opcoesEverymind = document.getElementById('opcoesEverymind');
             let caminhoArquivo = '';
@@ -320,7 +508,7 @@
             try {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlTexto, 'text/html');
-                
+
                 // --- INÍCIO DA MÁGICA: CONSERTANDO A TABELA DINAMICAMENTE ---
                 const tabela = doc.querySelector('table');
                 if (tabela) {
@@ -328,14 +516,14 @@
                     tabela.style.maxWidth = '600px';
                     tabela.style.width = '100%';
                     tabela.style.margin = '0'; // Garante que alinhe a esquerda
-                    
+
                     const celulas = doc.querySelectorAll('td');
                     if (celulas.length >= 2) {
                         // 2. Trava a coluna do Logo
-                        celulas[0].style.width = '160px'; 
+                        celulas[0].style.width = '160px';
                         celulas[0].style.minWidth = '160px';
-                        celulas[0].style.textAlign = 'left';
-                        
+                        celulas[0].style.textAlign = 'center';
+
                         // 3. Permite quebra de linha no texto e preserva a barra preta
                         celulas[1].style.wordBreak = 'break-word';
                         celulas[1].style.whiteSpace = 'normal';
@@ -343,7 +531,7 @@
                 }
                 // --- FIM DA MÁGICA ---
 
-                let htmlCorpo = doc.body.innerHTML; 
+                let htmlCorpo = doc.body.innerHTML;
 
                 htmlCorpo = htmlCorpo.replace(/Seu Nome Incr[ií]vel Aqui/gi, nomeDigitado);
                 htmlCorpo = htmlCorpo.replace(/Analista Desenvolvedor Trainee \| Everymind/gi, cargoDigitado);
@@ -368,7 +556,7 @@
             selecao.addRange(range);
             document.execCommand('copy');
             selecao.removeAllRanges();
-            
+
             const toast = document.getElementById("toast");
             toast.classList.add("mostrar");
             setTimeout(() => toast.classList.remove("mostrar"), 3000);
@@ -378,22 +566,22 @@
 
         function abrirModal(id) { document.getElementById(id).classList.add('mostrar'); }
         function fecharModal(id) { document.getElementById(id).classList.remove('mostrar'); }
-        
+
         function fecharAoClicarFora(evento, id) {
             if (evento.target.id === id) fecharModal(id);
         }
 
-        window.onload = function() {
-            carregarDadosSalvos(); 
-            atualizarE_Salvar(); 
+        window.onload = function () {
+            carregarDadosSalvos();
+            atualizarE_Salvar();
 
-            // Modal de boas vindas forçado a aparecer para você editar.
-            // Quando terminar, apague a linha do setTimeout abaixo e descomente o IF
-            if (!localStorage.getItem('boasVindasMostrado')) {
-                setTimeout(() => abrirModal('modalBemVindo'), 100);
+        // Modal de boas vindas forçado a aparecer para você editar.    
+        if (!localStorage.getItem('boasVindasMostrado')) {
+                setTimeout(() => abrirModal('modalBemVindo'), 500);
                 localStorage.setItem('boasVindasMostrado', 'true');
             }
         };
     </script>
 </body>
+
 </html>
