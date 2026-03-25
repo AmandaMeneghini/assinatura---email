@@ -457,19 +457,7 @@
         async function atualizarE_Salvar() {
             const selPartOfAir = document.getElementById('selectPartOfAir');
             const selRodape = document.getElementById('selectRodape');
-            const optRodapeEverymind = selRodape.querySelector('option[value="com-rodape-everymind"]');
-
-            if (selPartOfAir.value === 'sem-part-of-air') {
-                if (!optRodapeEverymind.disabled) {
-                    optRodapeEverymind.disabled = true;
-                    if (selRodape.value === 'com-rodape-everymind') {
-                        selRodape.value = 'sem-rodape';
-                    }
-                }
-            } else {
-                optRodapeEverymind.disabled = false;
-            }
-
+            
             salvarDadosEmCache();
 
             const empresa = document.getElementById('selectEmpresa').value;
