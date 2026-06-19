@@ -224,24 +224,63 @@
     }
 
     /**
-     * Handle keydown events in modals (Escape to close)
+     * Handle keydown events in modals (Escape to close, Tab to trap focus)
      * @param {KeyboardEvent} event
      */
     function handleModalKeydown(event) {
+        const openModal = document.querySelector('.modal-backdrop.mostrar');
+        if (!openModal) return;
+
         if (event.key === 'Escape') {
-            const openModal = document.querySelector('.modal-backdrop.mostrar');
-            if (openModal) {
-                fecharModal(openModal.id);
+            fecharModal(openModal.id);
+            return;
+        }
+
+        // Focus trap: cycle through focusable elements with Tab
+        if (event.key === 'Tab') {
+            const focusableElements = openModal.querySelectorAll(
+                'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            );
+            const focusableArray = Array.from(focusableElements);
+            
+            if (focusableArray.length === 0) return;
+
+            const firstElement = focusableArray[0];
+            const lastElement = focusableArray[focusableArray.length - 1];
+
+            if (event.shiftKey) {
+                // Shift+Tab: if on first element, go to last
+                if (document.activeElement === firstElement) {
+                    event.preventDefault();
+                    lastElement.focus();
+                }
+            } else {
+                // Tab: if on last element, go to first
+                if (document.activeElement === lastElement) {
+                    event.preventDefault();
+                    firstElement.focus();
+                }
             }
         }
     }
 
+    // Toast timeout ID for proper cleanup
+    let toastTimeoutId = null;
+
     /**
-     * Show success toast
+     * Show success toast with proper timer management
      */
     function mostrarToast() {
+        // Clear any existing timeout to prevent premature hiding
+        if (toastTimeoutId) {
+            clearTimeout(toastTimeoutId);
+        }
+        
         elementos.toast.classList.add('mostrar');
-        setTimeout(() => elementos.toast.classList.remove('mostrar'), 3000);
+        toastTimeoutId = setTimeout(() => {
+            elementos.toast.classList.remove('mostrar');
+            toastTimeoutId = null;
+        }, 3000);
     }
 
     // ============================================
