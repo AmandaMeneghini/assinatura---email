@@ -22,6 +22,12 @@ Gerador de assinaturas de e-mail corporativas para AI/R e suas powerhouses.
 4. Clique em **Copiar Assinatura**
 5. Cole no Outlook: **Configurações** → **Conta** → **Assinaturas**
 
+> *O passo-a-passo detalhado aparecerá em um modal após copiar a assinatura*
+
+## 🔒 Privacidade
+
+Seus dados (nome, cargo, telefone) ficam salvos **apenas no seu navegador** usando `localStorage`. Nenhuma informação é enviada para servidores — somente você tem acesso aos seus dados.
+
 ## 🏢 Sobre
 
 Este projeto faz parte da identidade visual AI/R 2026, unificando as assinaturas de e-mail de todas as powerhouses do grupo.
