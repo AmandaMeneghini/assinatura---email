@@ -4,601 +4,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gerador de assinaturas de e-mail corporativas para AI/R e suas powerhouses. Crie sua assinatura padronizada em segundos.">
+    <meta name="author" content="Amanda Meneghini">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Portal de Assinaturas AI/R">
+    <meta property="og:description" content="Gere sua assinatura corporativa de forma rápida e padronizada">
+    <meta property="og:url" content="https://amandameneghini.github.io/assinatura---email/">
+    
     <title>Portal de Assinaturas | AI/R</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✉️</text></svg>">
+
+    <!-- External CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="src/css/style.css">
+
+    <!-- External JS (confetti library) -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-
-    <style>
-        :root {
-            --primary: #000000;
-            --background: #f3f4f6;
-            --card-bg: #ffffff;
-            --text: #333333;
-            --border: #e5e7eb;
-            --success: #10b981;
-        }
-
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--background);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        header {
-            background-color: var(--primary);
-            color: white;
-            width: 100%;
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-
-        header p {
-            margin: 5px 0 0 0;
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        .container {
-            display: flex;
-            gap: 30px;
-            width: 90%;
-            max-width: 1200px;
-            flex-wrap: wrap;
-            align-items: flex-start;
-        }
-
-        .painel {
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .controles {
-            flex: 1;
-            min-width: 300px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .controles h2 {
-            margin-top: 0;
-            font-size: 18px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        label {
-            font-size: 13px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        input[type="text"],
-        select {
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 14px;
-            outline: none;
-            transition: 0.2s;
-        }
-
-        input[type="text"]:focus,
-        select:focus {
-            border-color: var(--primary);
-        }
-
-        /* Toggle Switch */
-        .toggle-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 5px;
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 50px;
-            height: 26px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border-radius: 26px;
-        }
-
-        .toggle-slider:hover {
-            transform: scale(1.05);
-        }
-
-        .toggle-slider:active {
-            transform: scale(0.95);
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: 0.3s;
-            border-radius: 50%;
-        }
-
-        input:checked + .toggle-slider {
-            background-color: var(--primary);
-        }
-
-        input:checked + .toggle-slider:before {
-            transform: translateX(24px);
-        }
-
-        .toggle-label {
-            font-size: 14px;
-            color: #555;
-        }
-
-        .campo-telefone {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            margin-top: 0;
-            transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
-        }
-
-        .campo-telefone.mostrar {
-            max-height: 100px;
-            opacity: 1;
-            margin-top: 10px;
-        }
-
-        .btn-copiar {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease;
-        }
-
-        .btn-copiar:hover {
-            background-color: #333;
-            transform: scale(1.03);
-        }
-
-        .btn-copiar:active {
-            transform: scale(0.97);
-        }
-
-        .preview-area {
-            flex: 2;
-            min-width: 400px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .preview-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-
-        .preview-header h2 {
-            margin: 0;
-            font-size: 18px;
-        }
-
-        .btn-ajuda {
-            background: none;
-            border: none;
-            color: #666;
-            font-size: 20px;
-            cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
-        }
-
-        .btn-ajuda:hover {
-            color: var(--primary);
-            transform: scale(1.2);
-        }
-
-        .btn-ajuda:active {
-            transform: scale(0.9);
-        }
-
-        .caixa-assinatura {
-            border: 2px dashed #ccc;
-            padding: 40px;
-            border-radius: 8px;
-            background-color: white;
-            min-height: 150px;
-            display: block;
-            overflow-x: auto;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* --- MODAIS --- */
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .modal-backdrop.mostrar {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .modal-conteudo {
-            background: #f4f4f4;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 600px;
-            width: 90%;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            position: relative;
-            transform: scale(0.9) translateY(-20px);
-            opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-        }
-
-        .modal-backdrop.mostrar .modal-conteudo {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-        }
-
-        .btn-fechar-modal {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: #888;
-            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
-        }
-
-        .btn-fechar-modal:hover {
-            color: var(--primary);
-            transform: scale(1.2);
-        }
-
-        .btn-fechar-modal:active {
-            transform: scale(0.9);
-        }
-
-        /* --- TOAST DE SUCESSO --- */
-        #toast {
-            visibility: hidden;
-            min-width: 250px;
-            background-color: var(--success);
-            color: #fff;
-            text-align: center;
-            border-radius: 8px;
-            padding: 16px;
-            position: fixed;
-            z-index: 3000;
-            right: 30px;
-            bottom: 30px;
-            font-size: 15px;
-            font-weight: bold;
-            box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transform: translateX(120%);
-            transition: 0.4s;
-        }
-
-        #toast.mostrar {
-            visibility: visible;
-            transform: translateX(0);
-        }
-
-        #barra-progresso {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 4px;
-            background-color: rgba(255, 255, 255, 0.8);
-            width: 100%;
-        }
-
-        @keyframes diminuirBarra {
-            from { width: 100%; }
-            to { width: 0%; }
-        }
-
-        #toast.mostrar #barra-progresso {
-            animation: diminuirBarra 3s linear forwards;
-        }
-    </style>
 </head>
 
 <body>
+    <!-- Skip link for keyboard navigation -->
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
 
-    <header>
+    <header role="banner">
         <h1>Portal de Assinaturas AI/R</h1>
         <p>Gere sua assinatura corporativa de forma rápida e padronizada</p>
     </header>
 
-    <div class="container">
-        <div class="painel controles">
-            <h2><i class="fa-solid fa-user"></i> Seus Dados</h2>
+    <main id="main-content" class="container" role="main">
+        <section class="painel controles" aria-labelledby="dados-title">
+            <h2 id="dados-title"><i class="fa-solid fa-user" aria-hidden="true"></i> Seus Dados</h2>
             <div class="form-group">
-                <label>Nome Completo:</label>
-                <input type="text" id="inputNome" placeholder="Ex: Seu Nome Maneiro Aqui" oninput="atualizarPreview()">
+                <label for="inputNome">Nome Completo:</label>
+                <div class="input-wrapper">
+                    <input type="text" id="inputNome" placeholder="Ex: Seu Nome Maneiro Aqui" autocomplete="name">
+                    <button type="button" class="btn-limpar" data-input="inputNome" aria-label="Limpar campo nome" hidden>
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
             <div class="form-group">
-                <label>Cargo:</label>
-                <input type="text" id="inputCargo" placeholder="Ex: Seu Cargo Maneiro Aqui" oninput="atualizarPreview()">
+                <label for="inputCargo">Cargo:</label>
+                <div class="input-wrapper">
+                    <input type="text" id="inputCargo" placeholder="Ex: Seu Cargo Maneiro Aqui" autocomplete="organization-title">
+                    <button type="button" class="btn-limpar" data-input="inputCargo" aria-label="Limpar campo cargo" hidden>
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="form-group">
                 <div class="toggle-group">
                     <label class="toggle-switch">
-                        <input type="checkbox" id="toggleTelefone" onchange="toggleCampoTelefone()">
-                        <span class="toggle-slider"></span>
+                        <input type="checkbox" id="toggleTelefone" role="switch" aria-checked="false" aria-label="Incluir telefone na assinatura">
+                        <span class="toggle-slider" aria-hidden="true"></span>
                     </label>
-                    <span class="toggle-label">Incluir telefone</span>
+                    <span class="toggle-label" id="toggle-label-text">Incluir telefone</span>
                 </div>
-                <div class="form-group campo-telefone" id="campoTelefone">
-                    <label>Telefone:</label>
-                    <input type="text" id="inputTelefone" placeholder="Ex: +55 11 99999-9999" oninput="atualizarPreview()">
+                <div class="form-group campo-telefone" id="campoTelefone" aria-hidden="true">
+                    <label for="inputTelefone">Telefone:</label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="inputTelefone" placeholder="Ex: +55 11 99999-9999" autocomplete="tel">
+                        <button type="button" class="btn-limpar" data-input="inputTelefone" aria-label="Limpar campo telefone" hidden>
+                            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <button class="btn-copiar" onclick="copiarAssinatura()">
-                <i class="fa-regular fa-copy"></i> Copiar Assinatura
+            <button type="button" class="btn-copiar" id="btnCopiar" aria-describedby="copy-description">
+                <i class="fa-regular fa-copy" aria-hidden="true"></i> Copiar Assinatura
             </button>
-        </div>
+            <span id="copy-description" class="sr-only">Copia a assinatura para a área de transferência</span>
+        </section>
 
-        <div class="painel preview-area">
+        <section class="painel preview-area" aria-labelledby="preview-title">
             <div class="preview-header">
-                <h2>Prévia</h2>
-                <button class="btn-ajuda" onclick="abrirModal('modalTutorial')" title="Como instalar no Outlook?">
-                    <i class="fa-solid fa-circle-question"></i>
+                <h2 id="preview-title">Prévia</h2>
+                <button type="button" class="btn-ajuda" id="btnAjuda" aria-label="Abrir tutorial de como instalar no Outlook" title="Como instalar no Outlook?">
+                    <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
                 </button>
             </div>
-            <div class="caixa-assinatura" id="assinatura-preview">
+            <div class="caixa-assinatura" id="assinatura-preview" role="region" aria-label="Prévia da assinatura de e-mail" aria-live="polite">
                 <p style="color: #888;">Preencha seus dados...</p>
             </div>
-        </div>
+        </section>
+    </main>
+
+    <!-- Toast notification -->
+    <div id="toast" role="status" aria-live="polite" aria-atomic="true">
+        <span aria-hidden="true">✨</span> Assinatura copiada com sucesso!
+        <div id="barra-progresso" aria-hidden="true"></div>
     </div>
 
-    <div id="toast">
-        ✨ Assinatura copiada com sucesso!
-        <div id="barra-progresso"></div>
-    </div>
-
-    <div class="modal-backdrop" id="modalBemVindo" onclick="fecharAoClicarFora(event, 'modalBemVindo')">
+    <!-- Welcome Modal -->
+    <div class="modal-backdrop" id="modalBemVindo" role="dialog" aria-modal="true" aria-labelledby="modal-welcome-title" aria-hidden="true">
         <div class="modal-conteudo">
-            <button class="btn-fechar-modal" onclick="fecharModal('modalBemVindo')">
-                <i class="fa-solid fa-xmark"></i>
+            <button type="button" class="btn-fechar-modal" aria-label="Fechar modal de boas-vindas" data-modal="modalBemVindo">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
-            <h2 style="margin-top: 0;"><i class="fa-solid fa-wand-magic-sparkles"></i> Portal AI/R 2026</h2>
+            <h2 id="modal-welcome-title" style="margin-top: 0;"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Portal AI/R 2026</h2>
             <p>Bem-vindo ao novo gerador de assinaturas! Agora com a identidade visual AI/R unificada.</p>
             <p>Preencha seus dados, ative o telefone se desejar, e copie sua assinatura em segundos.</p>
-            <button class="btn-copiar" style="width: 100%;" onclick="fecharModal('modalBemVindo')">Começar a usar</button>
+            <button type="button" class="btn-copiar" style="width: 100%;" data-close-modal="modalBemVindo">Começar a usar</button>
         </div>
     </div>
 
-    <div class="modal-backdrop" id="modalTutorial" onclick="fecharAoClicarFora(event, 'modalTutorial')">
+    <!-- Tutorial Modal -->
+    <div class="modal-backdrop" id="modalTutorial" role="dialog" aria-modal="true" aria-labelledby="modal-tutorial-title" aria-hidden="true">
         <div class="modal-conteudo">
-            <button class="btn-fechar-modal" onclick="fecharModal('modalTutorial')">
-                <i class="fa-solid fa-xmark"></i>
+            <button type="button" class="btn-fechar-modal" aria-label="Fechar tutorial" data-modal="modalTutorial">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
-            <h2 style="margin-top: 0;"><i class="fa-solid fa-envelope-open-text"></i> Como colocar no Outlook</h2>
+            <h2 id="modal-tutorial-title" style="margin-top: 0;"><i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i> Como colocar no Outlook</h2>
             <p>Sua assinatura já está copiada! Siga estes passos rápidos para ativá-la no Outlook Web:</p>
             <ol style="line-height: 1.6;">
-                <li>Abra o Outlook no navegador e clique na engrenagem de <strong>Configurações</strong> <i class="fa-solid fa-gear"></i>.</li>
+                <li>Abra o Outlook no navegador e clique na engrenagem de <strong>Configurações</strong> <i class="fa-solid fa-gear" aria-hidden="true"></i>.</li>
                 <li>Vá em <strong>Conta</strong> > <strong>Assinaturas</strong>.</li>
                 <li>Clique em <strong>+ Adicionar assinatura</strong> e dê um nome a ela.</li>
-                <li>Clique na caixa de texto e cole (<strong>Ctrl + V</strong>).</li>
+                <li>Clique na caixa de texto e cole (<kbd>Ctrl</kbd> + <kbd>V</kbd>).</li>
                 <li>Marque as caixas para definir como padrão para novas mensagens e respostas. (opcional)</li>
                 <li>Clique em <strong>Salvar</strong> e pronto!</li>
             </ol>
-            <button class="btn-copiar" style="width: 100%; background-color: #333;" onclick="fecharModal('modalTutorial')">Entendi!</button>
+            <button type="button" class="btn-copiar" style="width: 100%; background-color: #333;" data-close-modal="modalTutorial">Entendi!</button>
         </div>
     </div>
 
-    <script>
-        // Carregar dados salvos do localStorage
-        function carregarDadosSalvos() {
-            const dados = JSON.parse(localStorage.getItem('dadosAssinaturaAIR'));
-            if (dados) {
-                if (dados.nome) document.getElementById('inputNome').value = dados.nome;
-                if (dados.cargo) document.getElementById('inputCargo').value = dados.cargo;
-                if (dados.telefone) document.getElementById('inputTelefone').value = dados.telefone;
-                if (dados.mostrarTelefone) {
-                    document.getElementById('toggleTelefone').checked = true;
-                    document.getElementById('campoTelefone').classList.add('mostrar');
-                }
-            }
-        }
-
-        // Salvar dados no localStorage
-        function salvarDadosEmCache() {
-            const dados = {
-                nome: document.getElementById('inputNome').value,
-                cargo: document.getElementById('inputCargo').value,
-                telefone: document.getElementById('inputTelefone').value,
-                mostrarTelefone: document.getElementById('toggleTelefone').checked
-            };
-            localStorage.setItem('dadosAssinaturaAIR', JSON.stringify(dados));
-        }
-
-        // Toggle do campo telefone
-        function toggleCampoTelefone() {
-            const campoTelefone = document.getElementById('campoTelefone');
-            const toggle = document.getElementById('toggleTelefone');
-            
-            if (toggle.checked) {
-                campoTelefone.classList.add('mostrar');
-            } else {
-                campoTelefone.classList.remove('mostrar');
-            }
-            atualizarPreview();
-        }
-
-        // Gerar HTML da assinatura
-        function gerarHTMLAssinatura() {
-            const nome = document.getElementById('inputNome').value || 'Seu Nome Maneiro Aqui';
-            const cargo = document.getElementById('inputCargo').value || 'Seu Cargo Maneiro Aqui';
-            const telefone = document.getElementById('inputTelefone').value;
-            const mostrarTelefone = document.getElementById('toggleTelefone').checked && telefone;
-
-            let telefoneHTML = '';
-            if (mostrarTelefone) {
-                telefoneHTML = `
-                <tr>
-                    <td style="font-size:14px; color:#000000; font-family: Arial, sans-serif; padding-top: 4px;">${telefone}</td>
-                </tr>`;
-            }
-
-            return `
-<table cellpadding="0" cellspacing="0" border="0" width="600" align="left" style="background-color:#ffffff; font-family: Arial, sans-serif;">
-    <tr>    
-        <td width="133" align="center" valign="middle" style="padding: 20px 33px 20px 20px">
-            <a href="https://aircompany.ai" target="_blank">
-                <img src="http://community.avenuecode.biz/wp-content/uploads/2026/04/AIR-LOGO.png" alt="Logo AI/R Company" width="130">
-            </a>
-        </td>        
-        <td valign="middle" style="padding: 20px;">
-            <table cellpadding="0" cellspacing="0" border="0">
-                <tbody>
-                    <tr>
-                        <td style="font-size:20px; font-weight:bold; color:#000000; font-family: Arial, sans-serif;">${nome}</td>
-                    </tr>
-                    <tr>
-                        <td style="font-size:14px; color:#000000; font-family: Arial, sans-serif;">${cargo}</td>
-                    </tr>
-                    ${telefoneHTML}
-                </tbody>
-            </table>
-        </td>
-    </tr>   
-</table>
-<table width="100%" height="60" cellpadding="0" cellspacing="0" border="0">
-    <tbody> 
-        <tr>
-            <td>               
-                <img src="http://community.avenuecode.biz/wp-content/uploads/2026/02/LOGOS-POWERHOUSES-ASSINATURA-2.png" alt="AI/R Powerhouses" width="600">              
-            </td>
-        </tr> 
-    </tbody>
-</table>`;
-        }
-
-        // Atualizar preview
-        function atualizarPreview() {
-            salvarDadosEmCache();
-            document.getElementById('assinatura-preview').innerHTML = gerarHTMLAssinatura();
-        }
-
-        // Copiar assinatura
-        function copiarAssinatura() {
-            const assinatura = document.getElementById('assinatura-preview');
-            const range = document.createRange();
-            range.selectNodeContents(assinatura);
-            const selecao = window.getSelection();
-            selecao.removeAllRanges();
-            selecao.addRange(range);
-            document.execCommand('copy');
-            selecao.removeAllRanges();
-
-            // 🎉 Confete!
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 },
-                zIndex: 3000
-            });
-
-            const toast = document.getElementById("toast");
-            toast.classList.add("mostrar");
-            setTimeout(() => toast.classList.remove("mostrar"), 3000);
-
-            setTimeout(() => abrirModal('modalTutorial'), 500);
-        }
-
-        // Funções de modal
-        function abrirModal(id) { document.getElementById(id).classList.add('mostrar'); }
-        function fecharModal(id) { document.getElementById(id).classList.remove('mostrar'); }
-        function fecharAoClicarFora(evento, id) {
-            if (evento.target.id === id) fecharModal(id);
-        }
-
-        // Inicialização
-        window.onload = function () {
-            carregarDadosSalvos();
-            atualizarPreview();
-
-            // Modal de boas-vindas (primeira visita)
-            if (!localStorage.getItem('boasVindasAIR2026')) {
-                setTimeout(() => abrirModal('modalBemVindo'), 500);
-                localStorage.setItem('boasVindasAIR2026', 'true');
-            }
-        };
-    </script>
+    <!-- Main Application Script -->
+    <script src="src/js/main.js"></script>
 </body>
 
 </html>
