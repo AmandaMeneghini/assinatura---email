@@ -351,11 +351,11 @@
             <h2><i class="fa-solid fa-user"></i> Seus Dados</h2>
             <div class="form-group">
                 <label>Nome Completo:</label>
-                <input type="text" id="inputNome" placeholder="Ex: Amanda Meneghini" oninput="atualizarPreview()">
+                <input type="text" id="inputNome" placeholder="Ex: Seu Nome Maneiro Aqui" oninput="atualizarPreview()">
             </div>
             <div class="form-group">
                 <label>Cargo:</label>
-                <input type="text" id="inputCargo" placeholder="Ex: Analista Desenvolvedor" oninput="atualizarPreview()">
+                <input type="text" id="inputCargo" placeholder="Ex: Seu Cargo Maneiro Aqui" oninput="atualizarPreview()">
             </div>
 
             <div class="form-group">
@@ -467,8 +467,8 @@
 
         // Gerar HTML da assinatura
         function gerarHTMLAssinatura() {
-            const nome = document.getElementById('inputNome').value || 'Seu Nome Aqui';
-            const cargo = document.getElementById('inputCargo').value || 'Seu Cargo Aqui';
+            const nome = document.getElementById('inputNome').value || 'Seu Nome Maneiro Aqui';
+            const cargo = document.getElementById('inputCargo').value || 'Seu Cargo Maneiro Aqui';
             const telefone = document.getElementById('inputTelefone').value;
             const mostrarTelefone = document.getElementById('toggleTelefone').checked && telefone;
 
