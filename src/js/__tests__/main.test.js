@@ -8,9 +8,18 @@ describe('Portal de Assinaturas AI/R', () => {
     // HTML template for testing
     const createTestDOM = () => {
         document.body.innerHTML = `
-            <input type="text" id="inputNome" />
-            <input type="text" id="inputCargo" />
-            <input type="tel" id="inputTelefone" />
+            <div class="input-wrapper">
+                <input type="text" id="inputNome" />
+                <button type="button" class="btn-limpar" data-input="inputNome" hidden></button>
+            </div>
+            <div class="input-wrapper">
+                <input type="text" id="inputCargo" />
+                <button type="button" class="btn-limpar" data-input="inputCargo" hidden></button>
+            </div>
+            <div class="input-wrapper">
+                <input type="tel" id="inputTelefone" />
+                <button type="button" class="btn-limpar" data-input="inputTelefone" hidden></button>
+            </div>
             <input type="checkbox" id="toggleTelefone" />
             <div id="campoTelefone" aria-hidden="true"></div>
             <div id="assinatura-preview"></div>
@@ -351,6 +360,141 @@ describe('Portal de Assinaturas AI/R', () => {
                 expect(app.elementos.toast.classList.contains('mostrar')).toBe(false);
             });
         });
+
+        // ============================================
+        // CLEAR BUTTON FUNCTIONS TESTS
+        // ============================================
+        describe('Clear Button Functions', () => {
+            describe('toggleClearButton', () => {
+                test('should show clear button when input has value', () => {
+                    const btn = app.elementos.inputNome.parentElement.querySelector('.btn-limpar');
+                    app.elementos.inputNome.value = 'Test';
+                    
+                    app.toggleClearButton(app.elementos.inputNome);
+                    
+                    expect(btn.hidden).toBe(false);
+                });
+
+                test('should hide clear button when input is empty', () => {
+                    const btn = app.elementos.inputNome.parentElement.querySelector('.btn-limpar');
+                    app.elementos.inputNome.value = '';
+                    
+                    app.toggleClearButton(app.elementos.inputNome);
+                    
+                    expect(btn.hidden).toBe(true);
+                });
+
+                test('should handle input without clear button gracefully', () => {
+                    const orphanInput = document.createElement('input');
+                    orphanInput.value = 'test';
+                    document.body.appendChild(orphanInput);
+                    
+                    expect(() => app.toggleClearButton(orphanInput)).not.toThrow();
+                    
+                    document.body.removeChild(orphanInput);
+                });
+            });
+
+            describe('limparInput', () => {
+                test('should clear input value', () => {
+                    app.elementos.inputNome.value = 'Test Value';
+                    
+                    app.limparInput('inputNome');
+                    
+                    expect(app.elementos.inputNome.value).toBe('');
+                });
+
+                test('should focus input after clearing', () => {
+                    app.elementos.inputNome.value = 'Test';
+                    const focusSpy = jest.spyOn(app.elementos.inputNome, 'focus');
+                    
+                    app.limparInput('inputNome');
+                    
+                    expect(focusSpy).toHaveBeenCalled();
+                });
+
+                test('should hide clear button after clearing', () => {
+                    app.elementos.inputNome.value = 'Test';
+                    const btn = app.elementos.inputNome.parentElement.querySelector('.btn-limpar');
+                    btn.hidden = false;
+                    
+                    app.limparInput('inputNome');
+                    
+                    expect(btn.hidden).toBe(true);
+                });
+
+                test('should update preview after clearing', () => {
+                    app.elementos.inputNome.value = 'Before Clear';
+                    app.atualizarPreview();
+                    
+                    expect(app.elementos.preview.innerHTML).toContain('Before Clear');
+                    
+                    app.limparInput('inputNome');
+                    
+                    // Should show default value after clearing
+                    expect(app.elementos.preview.innerHTML).toContain(app.VALORES_PADRAO.NOME);
+                });
+
+                test('should handle non-existent input gracefully', () => {
+                    expect(() => app.limparInput('nonExistentInput')).not.toThrow();
+                });
+            });
+
+            describe('setupClearButtons', () => {
+                test('should initialize clear button visibility based on input values', () => {
+                    app.elementos.inputNome.value = 'Has Value';
+                    app.elementos.inputCargo.value = '';
+                    
+                    app.setupClearButtons();
+                    
+                    const btnNome = app.elementos.inputNome.parentElement.querySelector('.btn-limpar');
+                    const btnCargo = app.elementos.inputCargo.parentElement.querySelector('.btn-limpar');
+                    
+                    expect(btnNome.hidden).toBe(false);
+                    expect(btnCargo.hidden).toBe(true);
+                });
+
+                test('should clear input when clear button is clicked', () => {
+                    app.elementos.inputNome.value = 'Test Value';
+                    app.setupClearButtons();
+                    
+                    const btn = app.elementos.inputNome.parentElement.querySelector('.btn-limpar');
+                    btn.click();
+                    
+                    expect(app.elementos.inputNome.value).toBe('');
+                });
+
+                test('should toggle clear button visibility on input', () => {
+                    app.setupClearButtons();
+                    
+                    const btn = app.elementos.inputCargo.parentElement.querySelector('.btn-limpar');
+                    expect(btn.hidden).toBe(true);
+                    
+                    // Simulate typing
+                    app.elementos.inputCargo.value = 'New Value';
+                    app.elementos.inputCargo.dispatchEvent(new Event('input'));
+                    
+                    expect(btn.hidden).toBe(false);
+                    
+                    // Simulate clearing
+                    app.elementos.inputCargo.value = '';
+                    app.elementos.inputCargo.dispatchEvent(new Event('input'));
+                    
+                    expect(btn.hidden).toBe(true);
+                });
+
+                test('should handle null input elements gracefully', () => {
+                    // Temporarily set one element to null
+                    const originalInput = app.elementos.inputTelefone;
+                    app.elementos.inputTelefone = null;
+                    
+                    expect(() => app.setupClearButtons()).not.toThrow();
+                    
+                    // Restore
+                    app.elementos.inputTelefone = originalInput;
+                });
+            });
+        });
     });
 
     // ============================================
@@ -568,108 +712,202 @@ describe('Portal de Assinaturas AI/R', () => {
     // EVENT LISTENERS TESTS
     // ============================================
     describe('setupEventListeners', () => {
-        test('should attach input listeners', () => {
-            const addEventListenerSpy = jest.spyOn(app.elementos.inputNome, 'addEventListener');
-            
-            app.setupEventListeners();
-            
-            expect(addEventListenerSpy).toHaveBeenCalledWith('input', expect.any(Function));
+        // Helper to capture event listener callback
+        const captureEventCallback = (element, eventType) => {
+            let capturedCallback;
+            const originalAddEventListener = element.addEventListener;
+            element.addEventListener = function(event, callback) {
+                if (event === eventType) {
+                    capturedCallback = callback;
+                }
+                originalAddEventListener.call(this, event, callback);
+            };
+            return () => capturedCallback;
+        };
+
+        describe('input listeners', () => {
+            test('should update preview when typing in nome field', () => {
+                app.setupEventListeners();
+                
+                app.elementos.inputNome.value = 'Test Name';
+                app.elementos.inputNome.dispatchEvent(new Event('input'));
+                
+                expect(app.elementos.preview.innerHTML).toContain('Test Name');
+            });
+
+            test('should update preview when typing in cargo field', () => {
+                app.setupEventListeners();
+                
+                app.elementos.inputCargo.value = 'Test Role';
+                app.elementos.inputCargo.dispatchEvent(new Event('input'));
+                
+                expect(app.elementos.preview.innerHTML).toContain('Test Role');
+            });
         });
 
-        test('should attach toggle listener', () => {
-            const addEventListenerSpy = jest.spyOn(app.elementos.toggleTelefone, 'addEventListener');
-            
-            app.setupEventListeners();
-            
-            expect(addEventListenerSpy).toHaveBeenCalledWith('change', expect.any(Function));
+        describe('toggle phone field', () => {
+            test('should show phone field when toggle is checked', () => {
+                app.setupEventListeners();
+                
+                app.elementos.toggleTelefone.checked = true;
+                app.elementos.toggleTelefone.dispatchEvent(new Event('change'));
+                
+                expect(app.elementos.campoTelefone.classList.contains('mostrar')).toBe(true);
+                expect(app.elementos.campoTelefone.getAttribute('aria-hidden')).toBe('false');
+            });
+
+            test('should hide phone field when toggle is unchecked', () => {
+                // First show it
+                app.elementos.toggleTelefone.checked = true;
+                app.elementos.campoTelefone.classList.add('mostrar');
+                
+                app.setupEventListeners();
+                
+                app.elementos.toggleTelefone.checked = false;
+                app.elementos.toggleTelefone.dispatchEvent(new Event('change'));
+                
+                expect(app.elementos.campoTelefone.classList.contains('mostrar')).toBe(false);
+            });
         });
 
-        test('should attach copy button listener', () => {
-            const addEventListenerSpy = jest.spyOn(app.elementos.btnCopiar, 'addEventListener');
-            
-            app.setupEventListeners();
-            
-            expect(addEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
+        describe('keyboard accessibility', () => {
+            test('should toggle phone field with Enter key', () => {
+                const getCallback = captureEventCallback(app.elementos.toggleTelefone, 'keydown');
+                app.setupEventListeners();
+                
+                expect(app.elementos.toggleTelefone.checked).toBe(false);
+                
+                getCallback()({ key: 'Enter' });
+                
+                expect(app.elementos.toggleTelefone.checked).toBe(true);
+                expect(app.elementos.campoTelefone.classList.contains('mostrar')).toBe(true);
+            });
+
+            test('should not toggle phone field with Tab key', () => {
+                const getCallback = captureEventCallback(app.elementos.toggleTelefone, 'keydown');
+                app.setupEventListeners();
+                
+                expect(app.elementos.toggleTelefone.checked).toBe(false);
+                
+                getCallback()({ key: 'Tab' });
+                
+                expect(app.elementos.toggleTelefone.checked).toBe(false);
+            });
+
+            test('should not toggle phone field with Space key (native behavior)', () => {
+                const getCallback = captureEventCallback(app.elementos.toggleTelefone, 'keydown');
+                app.setupEventListeners();
+                
+                expect(app.elementos.toggleTelefone.checked).toBe(false);
+                
+                getCallback()({ key: ' ' });
+                
+                // Space is handled natively by checkbox, our handler should ignore it
+                expect(app.elementos.toggleTelefone.checked).toBe(false);
+            });
         });
 
-        test('should attach help button listener', () => {
-            const addEventListenerSpy = jest.spyOn(app.elementos.btnAjuda, 'addEventListener');
-            
-            app.setupEventListeners();
-            
-            expect(addEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
+        describe('button listeners', () => {
+            test('should copy signature when copy button is clicked', async () => {
+                const mockWrite = jest.fn().mockResolvedValue(undefined);
+                Object.defineProperty(navigator, 'clipboard', {
+                    value: { write: mockWrite },
+                    writable: true,
+                    configurable: true
+                });
+                window.ClipboardItem = jest.fn().mockImplementation((obj) => obj);
+                global.confetti = jest.fn();
+                
+                app.setupEventListeners();
+                app.elementos.preview.innerHTML = '<p>Test</p>';
+                
+                app.elementos.btnCopiar.click();
+                
+                // Wait for async clipboard operation
+                await new Promise(resolve => setTimeout(resolve, 0));
+                
+                expect(mockWrite).toHaveBeenCalled();
+            });
+
+            test('should open tutorial modal when help button is clicked', () => {
+                app.setupEventListeners();
+                
+                app.elementos.btnAjuda.click();
+                
+                const tutorialModal = document.getElementById('modalTutorial');
+                expect(tutorialModal.classList.contains('mostrar')).toBe(true);
+            });
         });
 
-        test('should attach modal close button listeners', () => {
-            app.setupEventListeners();
-            
-            // Simulate clicking close button
-            const closeBtn = document.querySelector('.btn-fechar-modal');
-            const modal = document.getElementById('modalBemVindo');
-            modal.classList.add('mostrar');
-            
-            closeBtn.click();
-            
-            expect(modal.classList.contains('mostrar')).toBe(false);
-        });
+        describe('modal close buttons', () => {
+            test('should close modal when close button is clicked', () => {
+                app.setupEventListeners();
+                
+                const modal = document.getElementById('modalBemVindo');
+                const closeBtn = modal.querySelector('.btn-fechar-modal');
+                modal.classList.add('mostrar');
+                
+                closeBtn.click();
+                
+                expect(modal.classList.contains('mostrar')).toBe(false);
+            });
 
-        test('should close modal using closest when data-modal is not set', () => {
-            // Create a modal with close button without data-modal attribute
-            const testModal = document.createElement('div');
-            testModal.id = 'modalTest';
-            testModal.className = 'modal-backdrop mostrar';
-            testModal.innerHTML = '<div class="modal-conteudo"><button class="btn-fechar-modal"></button></div>';
-            document.body.appendChild(testModal);
-            
-            app.setupEventListeners();
-            
-            const closeBtn = testModal.querySelector('.btn-fechar-modal');
-            closeBtn.click();
-            
-            expect(testModal.classList.contains('mostrar')).toBe(false);
-            
-            document.body.removeChild(testModal);
-        });
+            test('should close modal using data-close-modal attribute', () => {
+                app.setupEventListeners();
+                
+                const modal = document.getElementById('modalBemVindo');
+                const closeBtn = document.querySelector('[data-close-modal="modalBemVindo"]');
+                modal.classList.add('mostrar');
+                
+                closeBtn.click();
+                
+                expect(modal.classList.contains('mostrar')).toBe(false);
+            });
 
-        test('should attach data-close-modal button listeners', () => {
-            app.setupEventListeners();
-            
-            const closeBtn = document.querySelector('[data-close-modal]');
-            const modal = document.getElementById('modalBemVindo');
-            modal.classList.add('mostrar');
-            
-            closeBtn.click();
-            
-            expect(modal.classList.contains('mostrar')).toBe(false);
-        });
+            test('should close modal when clicking on backdrop', () => {
+                app.setupEventListeners();
+                
+                const modal = document.getElementById('modalBemVindo');
+                modal.classList.add('mostrar');
+                
+                // Simulate click on backdrop (modal itself)
+                const event = new MouseEvent('click', { bubbles: true });
+                Object.defineProperty(event, 'target', { value: modal });
+                modal.dispatchEvent(event);
+                
+                expect(modal.classList.contains('mostrar')).toBe(false);
+            });
 
-        test('should close modal on backdrop click', () => {
-            app.setupEventListeners();
-            
-            const modal = document.getElementById('modalBemVindo');
-            modal.classList.add('mostrar');
-            
-            // Simulate click on backdrop (modal itself)
-            const event = new MouseEvent('click', { bubbles: true });
-            Object.defineProperty(event, 'target', { value: modal });
-            modal.dispatchEvent(event);
-            
-            expect(modal.classList.contains('mostrar')).toBe(false);
-        });
+            test('should not close modal when clicking inside content', () => {
+                app.setupEventListeners();
+                
+                const modal = document.getElementById('modalBemVindo');
+                const content = modal.querySelector('.modal-conteudo');
+                modal.classList.add('mostrar');
+                
+                const event = new MouseEvent('click', { bubbles: true });
+                Object.defineProperty(event, 'target', { value: content });
+                modal.dispatchEvent(event);
+                
+                expect(modal.classList.contains('mostrar')).toBe(true);
+            });
 
-        test('should not close modal when clicking inside modal content', () => {
-            app.setupEventListeners();
-            
-            const modal = document.getElementById('modalBemVindo');
-            const content = modal.querySelector('.modal-conteudo');
-            modal.classList.add('mostrar');
-            
-            // Simulate click on content (not backdrop)
-            const event = new MouseEvent('click', { bubbles: true });
-            Object.defineProperty(event, 'target', { value: content });
-            modal.dispatchEvent(event);
-            
-            expect(modal.classList.contains('mostrar')).toBe(true);
+            test('should close modal using closest() when data-modal is not set', () => {
+                const testModal = document.createElement('div');
+                testModal.id = 'modalTest';
+                testModal.className = 'modal-backdrop mostrar';
+                testModal.innerHTML = '<div class="modal-conteudo"><button class="btn-fechar-modal"></button></div>';
+                document.body.appendChild(testModal);
+                
+                app.setupEventListeners();
+                
+                const closeBtn = testModal.querySelector('.btn-fechar-modal');
+                closeBtn.click();
+                
+                expect(testModal.classList.contains('mostrar')).toBe(false);
+                
+                document.body.removeChild(testModal);
+            });
         });
     });
 

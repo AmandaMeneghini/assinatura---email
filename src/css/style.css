@@ -127,6 +127,49 @@ select:focus {
 }
 
 /* ============================================
+   INPUT WRAPPER WITH CLEAR BUTTON
+   ============================================ */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper input {
+    flex: 1;
+    padding-right: 35px;
+}
+
+.btn-limpar {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.btn-limpar:hover {
+    color: var(--primary);
+}
+
+.btn-limpar:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+.btn-limpar[hidden] {
+    display: none;
+}
+
+/* ============================================
    TOGGLE SWITCH
    ============================================ */
 .toggle-group {
@@ -470,6 +513,7 @@ input:checked + .toggle-slider:before {
 *:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
+    border-radius: 2px;
 }
 
 .toggle-switch input:focus-visible + .toggle-slider {

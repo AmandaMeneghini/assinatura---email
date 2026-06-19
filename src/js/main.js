@@ -138,6 +138,59 @@
         atualizarPreview();
     }
 
+    // ============================================
+    // CLEAR BUTTON FUNCTIONS
+    // ============================================
+
+    /**
+     * Toggle visibility of clear button based on input value
+     * @param {HTMLInputElement} input - The input element
+     */
+    function toggleClearButton(input) {
+        const btn = input.parentElement.querySelector('.btn-limpar');
+        if (btn) {
+            const hasValue = input.value.length > 0;
+            btn.hidden = !hasValue;
+        }
+    }
+
+    /**
+     * Clear input field and hide clear button
+     * @param {string} inputId - ID of the input to clear
+     */
+    function limparInput(inputId) {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.value = '';
+            input.focus();
+            toggleClearButton(input);
+            atualizarPreview();
+        }
+    }
+
+    /**
+     * Set up clear button listeners for all inputs
+     */
+    function setupClearButtons() {
+        // Add input listeners to toggle clear button visibility
+        const inputs = [elementos.inputNome, elementos.inputCargo, elementos.inputTelefone];
+        inputs.forEach(input => {
+            if (input) {
+                input.addEventListener('input', () => toggleClearButton(input));
+                // Initialize visibility on load
+                toggleClearButton(input);
+            }
+        });
+
+        // Add click listeners to clear buttons
+        document.querySelectorAll('.btn-limpar').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const inputId = btn.dataset.input;
+                limparInput(inputId);
+            });
+        });
+    }
+
     /**
      * Open a modal by ID
      * @param {string} id - Modal ID
@@ -319,12 +372,23 @@
 
         // Toggle phone field
         elementos.toggleTelefone.addEventListener('change', toggleCampoTelefone);
+        
+        // Enable Enter key on toggle (accessibility)
+        elementos.toggleTelefone.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                elementos.toggleTelefone.checked = !elementos.toggleTelefone.checked;
+                toggleCampoTelefone();
+            }
+        });
 
         // Copy button
         elementos.btnCopiar.addEventListener('click', copiarAssinatura);
 
         // Help button
         elementos.btnAjuda.addEventListener('click', () => abrirModal('modalTutorial'));
+
+        // Clear buttons for inputs
+        setupClearButtons();
 
         // Modal close buttons
         document.querySelectorAll('.btn-fechar-modal').forEach(btn => {
@@ -377,6 +441,11 @@
         carregarDadosSalvos();
         atualizarPreview();
 
+        // Update clear buttons visibility after loading saved data
+        [elementos.inputNome, elementos.inputCargo, elementos.inputTelefone].forEach(input => {
+            if (input) toggleClearButton(input);
+        });
+
         // Show welcome modal on first visit
         if (!safeGetStorage(STORAGE_KEYS.BOAS_VINDAS)) {
             setTimeout(() => abrirModal('modalBemVindo'), 500);
@@ -417,6 +486,11 @@
         fecharModal,
         handleModalKeydown,
         mostrarToast,
+        
+        // Clear button functions
+        toggleClearButton,
+        limparInput,
+        setupClearButtons,
         
         // Signature functions
         sanitizeInput,

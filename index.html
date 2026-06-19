@@ -40,11 +40,21 @@
             <h2 id="dados-title"><i class="fa-solid fa-user" aria-hidden="true"></i> Seus Dados</h2>
             <div class="form-group">
                 <label for="inputNome">Nome Completo:</label>
-                <input type="text" id="inputNome" placeholder="Ex: Seu Nome Maneiro Aqui" autocomplete="name">
+                <div class="input-wrapper">
+                    <input type="text" id="inputNome" placeholder="Ex: Seu Nome Maneiro Aqui" autocomplete="name">
+                    <button type="button" class="btn-limpar" data-input="inputNome" aria-label="Limpar campo nome" hidden>
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
             <div class="form-group">
                 <label for="inputCargo">Cargo:</label>
-                <input type="text" id="inputCargo" placeholder="Ex: Seu Cargo Maneiro Aqui" autocomplete="organization-title">
+                <div class="input-wrapper">
+                    <input type="text" id="inputCargo" placeholder="Ex: Seu Cargo Maneiro Aqui" autocomplete="organization-title">
+                    <button type="button" class="btn-limpar" data-input="inputCargo" aria-label="Limpar campo cargo" hidden>
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="form-group">
@@ -57,7 +67,12 @@
                 </div>
                 <div class="form-group campo-telefone" id="campoTelefone" aria-hidden="true">
                     <label for="inputTelefone">Telefone:</label>
-                    <input type="tel" id="inputTelefone" placeholder="Ex: +55 11 99999-9999" autocomplete="tel">
+                    <div class="input-wrapper">
+                        <input type="tel" id="inputTelefone" placeholder="Ex: +55 11 99999-9999" autocomplete="tel">
+                        <button type="button" class="btn-limpar" data-input="inputTelefone" aria-label="Limpar campo telefone" hidden>
+                            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
