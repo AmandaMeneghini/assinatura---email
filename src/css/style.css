@@ -469,13 +469,14 @@ input:checked + .toggle-slider:before {
 
     .controles,
     .preview-area {
-        min-width: 100%;
+        min-width: 0;
         width: 100%;
     }
 
     .caixa-assinatura {
         padding: 20px;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     header h1 {
@@ -502,6 +503,17 @@ input:checked + .toggle-slider:before {
         border-radius: 8px;
     }
 
+    .caixa-assinatura {
+        padding: 10px;
+    }
+
+    /* Scale signature preview to fit mobile viewport */
+    .signature-scale-wrapper {
+        transform: scale(0.85);
+        transform-origin: top left;
+        width: 117.65%; /* 100% / 0.85 to compensate for scale */
+    }
+
     .btn-copiar {
         padding: 12px;
         font-size: 14px;
@@ -516,6 +528,28 @@ input:checked + .toggle-slider:before {
         right: 10px;
         left: 10px;
         min-width: auto;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - EXTRA SMALL MOBILE
+   ============================================ */
+@media (max-width: 360px) {
+    .caixa-assinatura {
+        padding: 8px;
+    }
+
+    .signature-scale-wrapper {
+        transform: scale(0.75);
+        width: 133.33%; /* 100% / 0.75 */
+    }
+
+    header h1 {
+        font-size: 18px;
+    }
+
+    .painel {
+        padding: 12px;
     }
 }
 
