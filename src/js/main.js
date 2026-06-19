@@ -102,6 +102,8 @@
                 elementos.toggleTelefone.setAttribute('aria-checked', 'true');
                 elementos.campoTelefone.classList.add('mostrar');
                 elementos.campoTelefone.setAttribute('aria-hidden', 'false');
+                elementos.inputTelefone.disabled = false;
+                elementos.inputTelefone.removeAttribute('tabindex');
             }
         }
     }
@@ -132,9 +134,15 @@
         elementos.campoTelefone.classList.toggle('mostrar', isChecked);
         elementos.campoTelefone.setAttribute('aria-hidden', String(!isChecked));
         
+        // Enable/disable phone input for accessibility
+        elementos.inputTelefone.disabled = !isChecked;
         if (isChecked) {
+            elementos.inputTelefone.removeAttribute('tabindex');
             elementos.inputTelefone.focus();
+        } else {
+            elementos.inputTelefone.setAttribute('tabindex', '-1');
         }
+        
         atualizarPreview();
     }
 
@@ -484,6 +492,12 @@
         [elementos.inputNome, elementos.inputCargo, elementos.inputTelefone].forEach(input => {
             if (input) toggleClearButton(input);
         });
+
+        // Hide page loader
+        const pageLoader = document.getElementById('page-loader');
+        if (pageLoader) {
+            pageLoader.classList.add('hidden');
+        }
 
         // Show welcome modal on first visit
         if (!safeGetStorage(STORAGE_KEYS.BOAS_VINDAS)) {

@@ -1097,6 +1097,21 @@ describe('Portal de Assinaturas AI/R', () => {
             
             expect(app.elementos.preview.innerHTML).toContain('table');
         });
+
+        test('should hide page loader on init', () => {
+            // Create page loader element
+            const pageLoader = document.createElement('div');
+            pageLoader.id = 'page-loader';
+            pageLoader.className = 'page-loader';
+            document.body.appendChild(pageLoader);
+            
+            app.init();
+            
+            expect(pageLoader.classList.contains('hidden')).toBe(true);
+            
+            // Cleanup
+            pageLoader.remove();
+        });
     });
 
     // ============================================
