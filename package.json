@@ -1,0 +1,39 @@
+{
+  "name": "portal-assinaturas-air",
+  "version": "2.0.0",
+  "description": "Gerador de assinaturas de e-mail corporativas para AI/R e suas powerhouses",
+  "main": "src/js/main.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:verbose": "jest --verbose --coverage"
+  },
+  "keywords": [
+    "email",
+    "signature",
+    "generator",
+    "air-company"
+  ],
+  "author": "Amanda Meneghini",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "coverageThreshold": {
+      "global": {
+        "branches": 95,
+        "functions": 95,
+        "lines": 100,
+        "statements": 98
+      }
+    },
+    "collectCoverageFrom": [
+      "src/js/**/*.js",
+      "!src/js/**/*.test.js"
+    ]
+  }
+}

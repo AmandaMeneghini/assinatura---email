@@ -6,7 +6,19 @@
  * @version 2.0.0
  */
 
-(function() {
+(function(root, factory) {
+    'use strict';
+    
+    // UMD pattern for browser and test environments
+    /* istanbul ignore else */
+    if (typeof module === 'object' && module.exports) {
+        // Node/CommonJS (Jest)
+        module.exports = factory();
+    } else {
+        // Browser global
+        root.AssinaturaApp = factory();
+    }
+})(/* istanbul ignore next */ typeof self !== 'undefined' ? self : this, function() {
     'use strict';
 
     // ============================================
@@ -372,10 +384,48 @@
         }
     }
 
-    // Run on DOM ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
+    // Run on DOM ready (only in browser environment)
+    /* istanbul ignore if */
+    if (typeof document !== 'undefined') {
+        /* istanbul ignore else */
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
     }
-})();
+
+    // ============================================
+    // EXPORT PUBLIC API (for testing)
+    // ============================================
+    return {
+        // Constants
+        STORAGE_KEYS,
+        VALORES_PADRAO,
+        CONFETTI_CONFIG,
+        elementos,
+        
+        // Storage functions
+        safeGetStorage,
+        safeSetStorage,
+        carregarDadosSalvos,
+        salvarDadosEmCache,
+        
+        // UI functions
+        toggleCampoTelefone,
+        abrirModal,
+        fecharModal,
+        handleModalKeydown,
+        mostrarToast,
+        
+        // Signature functions
+        sanitizeInput,
+        gerarHTMLAssinatura,
+        atualizarPreview,
+        copiarAssinatura,
+        
+        // Setup functions
+        setupEventListeners,
+        init
+    };
+});
