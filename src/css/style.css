@@ -343,6 +343,15 @@ input:checked + .toggle-slider:before {
     overflow-x: auto;
     width: 100%;
     box-sizing: border-box;
+    /* Scroll shadow indicators */
+    background: 
+        linear-gradient(to right, white 30%, transparent),
+        linear-gradient(to right, transparent, white 70%) 100% 0,
+        linear-gradient(to right, rgba(0,0,0,0.1), transparent 15px),
+        linear-gradient(to left, rgba(0,0,0,0.1), transparent 15px) 100% 0;
+    background-repeat: no-repeat;
+    background-size: 40px 100%, 40px 100%, 15px 100%, 15px 100%;
+    background-attachment: local, local, scroll, scroll;
 }
 
 /* ============================================
