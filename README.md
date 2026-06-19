@@ -1,46 +1,39 @@
-# Galeria de Assinaturas de E-mail
+# ✉️ Portal de Assinaturas AI/R
 
-> [!WARNING]
-> Clique na **imagem de prévia** abaixo para abrir o **arquivo HTML** da assinatura correspondente. 🖱️⚡
+Gerador de assinaturas de e-mail corporativas para AI/R e suas powerhouses.
+
+## 🚀 Acesse o Portal
+
+**[👉 Clique aqui para acessar o gerador](https://amandameneghini.github.io/assinatura---email/)**
+
+## ✨ Funcionalidades
+
+- 📝 **Campos personalizáveis**: Nome, Cargo e Telefone (opcional)
+- 👁️ **Preview em tempo real**: Veja a assinatura enquanto digita
+- 📋 **Copiar com um clique**: Botão para copiar a assinatura pronta
+- 💾 **Dados salvos**: Suas informações ficam salvas no navegador
+- 📱 **Responsivo**: Funciona em desktop e mobile
+
+## 📋 Como usar
+
+1. Acesse o [Portal de Assinaturas](https://amandameneghini.github.io/assinatura---email/)
+2. Preencha seu **Nome** e **Cargo**
+3. (Opcional) Ative o toggle para incluir **Telefone**
+4. Clique em **Copiar Assinatura**
+5. Cole no Outlook: **Configurações** → **Conta** → **Assinaturas**
+
+> *O passo-a-passo detalhado aparecerá em um modal após copiar a assinatura*
+
+## 🔒 Privacidade
+
+Seus dados (nome, cargo, telefone) ficam salvos **apenas no seu navegador** usando `localStorage`. Nenhuma informação é enviada para servidores — somente você tem acesso aos seus dados.
+
+## 🏢 Sobre
+
+Este projeto faz parte da identidade visual AI/R 2026, unificando as assinaturas de e-mail de todas as powerhouses do grupo.
+
 ---
 
-## ☁️ Air
-
-### Assinatura Padrão Air
-[![Preview Assinatura Air](./assets/readme/op1.png)](air/assinatura-air.html)
-
----
-
-## 🧠 Everymind
-
-Esta seção contém as variações da assinatura Everymind organizadas por categoria.
-
-### 1. Com "Part of Air" ✅
-
-#### Com Rodapé Air
-| Variação | Prévia |
-| :---: | :---: |
-| Logo Todo Preto | [![Logo Preto](./assets/readme/op2.png)](everymind/com-part-of-air/com-rodape-air/logo-todo-preto/assinatura-everymind.html) |
-| Original | [![Original](./assets/readme/op3.png)](everymind/com-part-of-air/com-rodape-air/original/assinatura-everymind.html) |
-
-#### Sem Rodapé
-| Variação | Prévia |
-| :---: | :---: |
-| Logo Todo Preto | [![Logo Preto](./assets/readme/op4.png)](everymind/com-part-of-air/sem-rodape/logo-todo-preto/assinatura-everymind.html) |
-| Original | [![Original](./assets/readme/op5.png)](everymind/com-part-of-air/sem-rodape/original/assinatura-everymind.html) |
-
----
-
-### 2. Sem "Part of Air" ❌
-
-#### Com Rodapé Air
-| Variação | Prévia |
-| :---: | :---: |
-| Logo Todo Preto | [![Logo Preto](./assets/readme/op6.png)](everymind/sem-part-of-air/com-rodape-air/logo-todo-preto/assinatura-everymind.html) |
-| Original | [![Original](./assets/readme/op7.png)](everymind/sem-part-of-air/com-rodape-air/original/assinatura-everymind.html) |
-
-#### Sem Rodapé
-| Variação | Prévia |
-| :---: | :---: |
-| Logo Todo Preto | [![Logo Preto](./assets/readme/op8.png)](everymind/sem-part-of-air/sem-rodape/logo-todo-preto/assinatura-everymind.html) |
-| Original | [![Original](./assets/readme/op9.png)](everymind/sem-part-of-air/sem-rodape/original/assinatura-everymind.html) |
+<p align="center">
+  <strong>Feito voluntariamente com 💛</strong> — por Amanda Meneghini
+</p>
