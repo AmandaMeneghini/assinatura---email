@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal de Assinaturas | Everymind & AI/R</title>
+    <title>Portal de Assinaturas | AI/R</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -93,7 +93,7 @@
             color: #555;
         }
 
-        input,
+        input[type="text"],
         select {
             padding: 10px;
             border: 1px solid var(--border);
@@ -103,9 +103,75 @@
             transition: 0.2s;
         }
 
-        input:focus,
+        input[type="text"]:focus,
         select:focus {
             border-color: var(--primary);
+        }
+
+        /* Toggle Switch */
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .toggle-label {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .campo-telefone {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .campo-telefone.mostrar {
+            display: flex;
         }
 
         .btn-copiar {
@@ -147,7 +213,6 @@
             font-size: 18px;
         }
 
-        /* Ícone de Ajuda no painel de prévia */
         .btn-ajuda {
             background: none;
             border: none;
@@ -162,7 +227,6 @@
             transform: scale(1.1);
         }
 
-        /* MUDANÇA AQUI: Removi o flexbox complicado e coloquei block com largura 100% para não bugar a tabela */
         .caixa-assinatura {
             border: 2px dashed #ccc;
             padding: 40px;
@@ -175,7 +239,7 @@
             box-sizing: border-box;
         }
 
-        /* --- MODAIS (BEM-VINDO E TUTORIAL) --- */
+        /* --- MODAIS --- */
         .modal-backdrop {
             position: fixed;
             top: 0;
@@ -229,12 +293,6 @@
             color: var(--primary);
         }
 
-        .imagem-antes-depois {
-            width: 100%;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-
         /* --- TOAST DE SUCESSO --- */
         #toast {
             visibility: hidden;
@@ -271,13 +329,8 @@
         }
 
         @keyframes diminuirBarra {
-            from {
-                width: 100%;
-            }
-
-            to {
-                width: 0%;
-            }
+            from { width: 100%; }
+            to { width: 0%; }
         }
 
         #toast.mostrar #barra-progresso {
@@ -289,57 +342,39 @@
 <body>
 
     <header>
-        <h1>Portal de Assinaturas</h1>
+        <h1>Portal de Assinaturas AI/R</h1>
         <p>Gere sua assinatura corporativa de forma rápida e padronizada</p>
     </header>
 
     <div class="container">
         <div class="painel controles">
-            <h2>1. Seus Dados</h2>
+            <h2><i class="fa-solid fa-user"></i> Seus Dados</h2>
             <div class="form-group">
                 <label>Nome Completo:</label>
-                <input type="text" id="inputNome" placeholder="Ex: Seu Nome Incrível Aqui"
-                    oninput="atualizarE_Salvar()">
+                <input type="text" id="inputNome" placeholder="Ex: Amanda Meneghini" oninput="atualizarPreview()">
             </div>
             <div class="form-group">
                 <label>Cargo:</label>
-                <input type="text" id="inputCargo" placeholder="Ex: Cargo Maneiro" oninput="atualizarE_Salvar()">
+                <input type="text" id="inputCargo" placeholder="Ex: Analista Desenvolvedor" oninput="atualizarPreview()">
             </div>
 
-            <h2 style="margin-top: 15px;">2. Modelo</h2>
             <div class="form-group">
-                <label>Empresa:</label>
-                <select id="selectEmpresa" onchange="atualizarE_Salvar()">
-                    <option value="everymind">Everymind</option>
-                    <option value="air">Air (Padrão)</option>
-                </select>
-            </div>
-            <div id="opcoesEverymind" style="display: flex; flex-direction: column; gap: 15px;">
-                <div class="form-group">
-                    <label>Selo "Part of Air":</label>
-                    <select id="selectPartOfAir" onchange="atualizarE_Salvar()">
-                        <option value="com-part-of-air">Com "Part of Air"</option>
-                        <option value="sem-part-of-air">Sem "Part of Air"</option>
-                    </select>
+                <div class="toggle-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggleTelefone" onchange="toggleCampoTelefone()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">Incluir telefone</span>
                 </div>
-                <div class="form-group">
-                    <label>Rodapé da AI/R:</label>
-                    <select id="selectRodape" onchange="atualizarE_Salvar()">
-                        <option value="sem-rodape">Sem Rodapé</option>
-                        <option value="com-rodape-air">Com Rodapé Air</option>
-                        <option value="com-rodape-everymind">Com Rodapé Everymind</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Estilo do Logo:</label>
-                    <select id="selectLogo" onchange="atualizarE_Salvar()">
-                        <option value="original">Original (Colorido)</option>
-                        <option value="logo-todo-preto">Todo Preto</option>
-                    </select>
+                <div class="form-group campo-telefone" id="campoTelefone">
+                    <label>Telefone:</label>
+                    <input type="text" id="inputTelefone" placeholder="Ex: +55 11 99999-9999" oninput="atualizarPreview()">
                 </div>
             </div>
-            <button class="btn-copiar" onclick="copiarAssinatura()"><i class="fa-regular fa-copy"></i> Copiar
-                Assinatura</button>
+
+            <button class="btn-copiar" onclick="copiarAssinatura()">
+                <i class="fa-regular fa-copy"></i> Copiar Assinatura
+            </button>
         </div>
 
         <div class="painel preview-area">
@@ -350,7 +385,7 @@
                 </button>
             </div>
             <div class="caixa-assinatura" id="assinatura-preview">
-                <p style="color: #888;">Carregando modelo...</p>
+                <p style="color: #888;">Preencha seus dados...</p>
             </div>
         </div>
     </div>
@@ -362,179 +397,130 @@
 
     <div class="modal-backdrop" id="modalBemVindo" onclick="fecharAoClicarFora(event, 'modalBemVindo')">
         <div class="modal-conteudo">
-            <button class="btn-fechar-modal" onclick="fecharModal('modalBemVindo')"><i
-                    class="fa-solid fa-xmark"></i></button>
-            <h2 style="margin-top: 0;"><i class="fa-solid fa-wand-magic-sparkles"></i> Bem-vindo ao novo gerador!</h2>
-            <p>Diga adeus àquelas linhas de tabela indesejadas no modo escuro e aos problemas de formatação. Configure
-                sua assinatura moderna, limpa e padronizada em segundos.</p>
-
-            <img src="./assets/antes-depois-v2.png" alt="Comparação da assinatura antiga com a nova"
-                class="imagem-antes-depois">
-
-            <button class="btn-copiar" style="width: 100%;" onclick="fecharModal('modalBemVindo')">Começar a
-                usar</button>
+            <button class="btn-fechar-modal" onclick="fecharModal('modalBemVindo')">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2 style="margin-top: 0;"><i class="fa-solid fa-wand-magic-sparkles"></i> Portal AI/R 2026</h2>
+            <p>Bem-vindo ao novo gerador de assinaturas! Agora com a identidade visual AI/R unificada.</p>
+            <p>Preencha seus dados, ative o telefone se desejar, e copie sua assinatura em segundos.</p>
+            <button class="btn-copiar" style="width: 100%;" onclick="fecharModal('modalBemVindo')">Começar a usar</button>
         </div>
     </div>
 
     <div class="modal-backdrop" id="modalTutorial" onclick="fecharAoClicarFora(event, 'modalTutorial')">
         <div class="modal-conteudo">
-            <button class="btn-fechar-modal" onclick="fecharModal('modalTutorial')"><i
-                    class="fa-solid fa-xmark"></i></button>
+            <button class="btn-fechar-modal" onclick="fecharModal('modalTutorial')">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
             <h2 style="margin-top: 0;"><i class="fa-solid fa-envelope-open-text"></i> Como colocar no Outlook</h2>
             <p>Sua assinatura já está copiada! Siga estes passos rápidos para ativá-la no Outlook Web:</p>
             <ol style="line-height: 1.6;">
-                <li>Abra o Outlook no navegador e clique na engrenagem de <strong>Configurações</strong> <i
-                        class="fa-solid fa-gear"></i>.</li>
+                <li>Abra o Outlook no navegador e clique na engrenagem de <strong>Configurações</strong> <i class="fa-solid fa-gear"></i>.</li>
                 <li>Vá em <strong>Conta</strong> > <strong>Assinaturas</strong>.</li>
                 <li>Clique em <strong>+ Adicionar assinatura</strong> e dê um nome a ela.</li>
                 <li>Clique na caixa de texto e cole (<strong>Ctrl + V</strong>).</li>
                 <li>Marque as caixas para definir como padrão para novas mensagens e respostas. (opcional)</li>
                 <li>Clique em <strong>Salvar</strong> e pronto!</li>
             </ol>
-            <button class="btn-copiar" style="width: 100%; background-color: #333;"
-                onclick="fecharModal('modalTutorial')">Entendi!</button>
+            <button class="btn-copiar" style="width: 100%; background-color: #333;" onclick="fecharModal('modalTutorial')">Entendi!</button>
         </div>
     </div>
 
     <script>
+        // Carregar dados salvos do localStorage
         function carregarDadosSalvos() {
-            const dados = JSON.parse(localStorage.getItem('dadosAssinaturaEverymind'));
+            const dados = JSON.parse(localStorage.getItem('dadosAssinaturaAIR'));
             if (dados) {
                 if (dados.nome) document.getElementById('inputNome').value = dados.nome;
                 if (dados.cargo) document.getElementById('inputCargo').value = dados.cargo;
-                if (dados.empresa) document.getElementById('selectEmpresa').value = dados.empresa;
-                if (dados.partOfAir) document.getElementById('selectPartOfAir').value = dados.partOfAir;
-                if (dados.rodape) document.getElementById('selectRodape').value = dados.rodape;
-                if (dados.logo) document.getElementById('selectLogo').value = dados.logo;
+                if (dados.telefone) document.getElementById('inputTelefone').value = dados.telefone;
+                if (dados.mostrarTelefone) {
+                    document.getElementById('toggleTelefone').checked = true;
+                    document.getElementById('campoTelefone').classList.add('mostrar');
+                }
             }
         }
 
+        // Salvar dados no localStorage
         function salvarDadosEmCache() {
             const dados = {
                 nome: document.getElementById('inputNome').value,
                 cargo: document.getElementById('inputCargo').value,
-                empresa: document.getElementById('selectEmpresa').value,
-                partOfAir: document.getElementById('selectPartOfAir').value,
-                rodape: document.getElementById('selectRodape').value,
-                logo: document.getElementById('selectLogo').value
+                telefone: document.getElementById('inputTelefone').value,
+                mostrarTelefone: document.getElementById('toggleTelefone').checked
             };
-            localStorage.setItem('dadosAssinaturaEverymind', JSON.stringify(dados));
+            localStorage.setItem('dadosAssinaturaAIR', JSON.stringify(dados));
         }
 
-        // Esta função gera um HTML base apenas caso o fetch falhe (ex: rodando no preview online do Canvas)
-        function obterMockHTML(rodape) {
-            let footer = '';
-            if (rodape !== 'sem-rodape') {
-                footer = `
+        // Toggle do campo telefone
+        function toggleCampoTelefone() {
+            const campoTelefone = document.getElementById('campoTelefone');
+            const toggle = document.getElementById('toggleTelefone');
+            
+            if (toggle.checked) {
+                campoTelefone.classList.add('mostrar');
+            } else {
+                campoTelefone.classList.remove('mostrar');
+            }
+            atualizarPreview();
+        }
+
+        // Gerar HTML da assinatura
+        function gerarHTMLAssinatura() {
+            const nome = document.getElementById('inputNome').value || 'Seu Nome Aqui';
+            const cargo = document.getElementById('inputCargo').value || 'Seu Cargo Aqui';
+            const telefone = document.getElementById('inputTelefone').value;
+            const mostrarTelefone = document.getElementById('toggleTelefone').checked && telefone;
+
+            let telefoneHTML = '';
+            if (mostrarTelefone) {
+                telefoneHTML = `
                 <tr>
-                    <td colspan="2" style="padding-top: 20px;">
-                        <img src="https://res.cloudinary.com/dpmbi5ega/image/upload/v1773959259/Outlook-Image_Foot_awbmei.png" alt="Footer Banner" width="600" style="display: block; max-width: 100%;">
-                    </td>
+                    <td style="font-size:14px; color:#000000; font-family: Arial, sans-serif; padding-top: 4px;">${telefone}</td>
                 </tr>`;
             }
+
             return `
-            <table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; color: #333333; line-height: 1.4; padding-top: 20px;">
-                <tr>
-                    <td style="vertical-align: middle; text-align: left; padding: 0 20px 0 15px;">
-                        <a href="https://www.everymind.uol/" target="_blank" style="text-decoration: none;">
-                            <img src="https://res.cloudinary.com/dpmbi5ega/image/upload/v1773527615/gre74993lt_brprny.png" alt="Everymind Logo" style="display: inline-block;" width="133">
-                        </a>
-                    </td>
-                    <td style="vertical-align: middle; border-left: 1px solid #000000; padding-left: 30px;">
-                        <strong style="font-size: 20px; color: #000000; display: block; line-height: 1.2;">
-                            Seu Nome Incrível Aqui
-                        </strong>
-                        <span style="font-size: 14px; color: #000000; display: block; padding-top: 8px;">
-                            Analista Desenvolvedor Trainee | Everymind
-                        </span>
-                    </td>
-                </tr>
-                ${footer}
+<table cellpadding="0" cellspacing="0" border="0" width="600" align="left" style="background-color:#ffffff; font-family: Arial, sans-serif;">
+    <tr>    
+        <td width="133" align="center" valign="middle" style="padding: 20px 33px 20px 20px">
+            <a href="https://aircompany.ai" target="_blank">
+                <img src="http://community.avenuecode.biz/wp-content/uploads/2026/04/AIR-LOGO.png" alt="Logo AI/R Company" width="130">
+            </a>
+        </td>        
+        <td valign="middle" style="padding: 20px;">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tbody>
+                    <tr>
+                        <td style="font-size:20px; font-weight:bold; color:#000000; font-family: Arial, sans-serif;">${nome}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:14px; color:#000000; font-family: Arial, sans-serif;">${cargo}</td>
+                    </tr>
+                    ${telefoneHTML}
+                </tbody>
             </table>
-            `;
+        </td>
+    </tr>   
+</table>
+<table width="100%" height="60" cellpadding="0" cellspacing="0" border="0">
+    <tbody> 
+        <tr>
+            <td>               
+                <img src="http://community.avenuecode.biz/wp-content/uploads/2026/02/LOGOS-POWERHOUSES-ASSINATURA-2.png" alt="AI/R Powerhouses" width="600">              
+            </td>
+        </tr> 
+    </tbody>
+</table>`;
         }
 
-        async function atualizarE_Salvar() {
-            const selPartOfAir = document.getElementById('selectPartOfAir');
-            const selRodape = document.getElementById('selectRodape');
-            
+        // Atualizar preview
+        function atualizarPreview() {
             salvarDadosEmCache();
-
-            const empresa = document.getElementById('selectEmpresa').value;
-            const opcoesEverymind = document.getElementById('opcoesEverymind');
-            let caminhoArquivo = '';
-
-            if (empresa === 'air') {
-                opcoesEverymind.style.display = 'none';
-                caminhoArquivo = 'air/assinatura-air.html';
-            } else {
-                opcoesEverymind.style.display = 'flex';
-                const partOfAir = selPartOfAir.value;
-                const rodape = selRodape.value;
-                const logo = document.getElementById('selectLogo').value;
-                caminhoArquivo = `everymind/${partOfAir}/${rodape}/${logo}/assinatura-everymind.html`;
-            }
-
-            const nomeDigitado = document.getElementById('inputNome').value || 'Seu Nome Incrível Aqui';
-            const cargoDigitado = document.getElementById('inputCargo').value || 'Analista Desenvolvedor Trainee | Everymind';
-
-            let htmlTexto = "";
-
-            try {
-                // Tenta buscar o arquivo (Adicionado './' para corrigir o parse de URL e suportar o Live Server)
-                const response = await fetch('./' + caminhoArquivo);
-                if (!response.ok) throw new Error('Arquivo não encontrado localmente.');
-                htmlTexto = await response.text();
-            } catch (error) {
-                // FALLBACK: O erro que você viu ocorre porque o Canvas (aqui nesta tela de chat) roda em um ambiente virtual
-                // que não consegue ler suas pastas locais "everymind/...". Para você não ver uma tela vermelha de erro
-                // enquanto testa aqui comigo, eu criei uma função que retorna um HTML "Mock" para que possamos ver o preview funcionando.
-                console.warn("Utilizando Mock HTML devido a erro de fetch em ambiente restrito.", error);
-                htmlTexto = obterMockHTML(selRodape.value);
-            }
-
-            try {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlTexto, 'text/html');
-
-                // --- INÍCIO DA MÁGICA: CONSERTANDO A TABELA DINAMICAMENTE ---
-                const tabela = doc.querySelector('table');
-                if (tabela) {
-                    // 1. Limita a tabela inteira a 600px
-                    tabela.style.maxWidth = '600px';
-                    tabela.style.width = '100%';
-                    tabela.style.margin = '0'; // Garante que alinhe a esquerda
-
-                    const celulas = doc.querySelectorAll('td');
-                    if (celulas.length >= 2) {
-                        // 2. Trava a coluna do Logo
-                        celulas[0].style.width = '160px';
-                        celulas[0].style.minWidth = '160px';
-                        celulas[0].style.textAlign = 'center';
-
-                        // 3. Permite quebra de linha no texto e preserva a barra preta
-                        celulas[1].style.wordBreak = 'break-word';
-                        celulas[1].style.whiteSpace = 'normal';
-                    }
-                }
-                // --- FIM DA MÁGICA ---
-
-                let htmlCorpo = doc.body.innerHTML;
-
-                htmlCorpo = htmlCorpo.replace(/Seu Nome Incr[ií]vel Aqui/gi, nomeDigitado);
-                htmlCorpo = htmlCorpo.replace(/Analista Desenvolvedor Trainee \| Everymind/gi, cargoDigitado);
-
-                document.getElementById('assinatura-preview').innerHTML = htmlCorpo;
-            } catch (error) {
-                console.error("Erro ao processar o HTML:", error);
-                document.getElementById('assinatura-preview').innerHTML = `
-                    <div style="text-align: center; color: #721c24; background-color: #f8d7da; padding: 20px; border-radius: 5px; border: 1px solid #f5c6cb;">
-                        <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px; margin-bottom: 10px;"></i><br>
-                        <strong>Não foi possível processar o modelo.</strong>
-                    </div>`;
-            }
+            document.getElementById('assinatura-preview').innerHTML = gerarHTMLAssinatura();
         }
 
+        // Copiar assinatura
         function copiarAssinatura() {
             const assinatura = document.getElementById('assinatura-preview');
             const range = document.createRange();
@@ -552,21 +538,22 @@
             setTimeout(() => abrirModal('modalTutorial'), 500);
         }
 
+        // Funções de modal
         function abrirModal(id) { document.getElementById(id).classList.add('mostrar'); }
         function fecharModal(id) { document.getElementById(id).classList.remove('mostrar'); }
-
         function fecharAoClicarFora(evento, id) {
             if (evento.target.id === id) fecharModal(id);
         }
 
+        // Inicialização
         window.onload = function () {
             carregarDadosSalvos();
-            atualizarE_Salvar();
+            atualizarPreview();
 
-        // Modal de boas vindas forçado a aparecer para você editar.    
-        if (!localStorage.getItem('boasVindasMostrado')) {
+            // Modal de boas-vindas (primeira visita)
+            if (!localStorage.getItem('boasVindasAIR2026')) {
                 setTimeout(() => abrirModal('modalBemVindo'), 500);
-                localStorage.setItem('boasVindasMostrado', 'true');
+                localStorage.setItem('boasVindasAIR2026', 'true');
             }
         };
     </script>
