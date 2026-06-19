@@ -102,6 +102,8 @@
                 elementos.toggleTelefone.setAttribute('aria-checked', 'true');
                 elementos.campoTelefone.classList.add('mostrar');
                 elementos.campoTelefone.setAttribute('aria-hidden', 'false');
+                elementos.inputTelefone.disabled = false;
+                elementos.inputTelefone.removeAttribute('tabindex');
             }
         }
     }
@@ -132,9 +134,15 @@
         elementos.campoTelefone.classList.toggle('mostrar', isChecked);
         elementos.campoTelefone.setAttribute('aria-hidden', String(!isChecked));
         
+        // Enable/disable phone input for accessibility
+        elementos.inputTelefone.disabled = !isChecked;
         if (isChecked) {
+            elementos.inputTelefone.removeAttribute('tabindex');
             elementos.inputTelefone.focus();
+        } else {
+            elementos.inputTelefone.setAttribute('tabindex', '-1');
         }
+        
         atualizarPreview();
     }
 
@@ -224,24 +232,63 @@
     }
 
     /**
-     * Handle keydown events in modals (Escape to close)
+     * Handle keydown events in modals (Escape to close, Tab to trap focus)
      * @param {KeyboardEvent} event
      */
     function handleModalKeydown(event) {
+        const openModal = document.querySelector('.modal-backdrop.mostrar');
+        if (!openModal) return;
+
         if (event.key === 'Escape') {
-            const openModal = document.querySelector('.modal-backdrop.mostrar');
-            if (openModal) {
-                fecharModal(openModal.id);
+            fecharModal(openModal.id);
+            return;
+        }
+
+        // Focus trap: cycle through focusable elements with Tab
+        if (event.key === 'Tab') {
+            const focusableElements = openModal.querySelectorAll(
+                'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            );
+            const focusableArray = Array.from(focusableElements);
+            
+            if (focusableArray.length === 0) return;
+
+            const firstElement = focusableArray[0];
+            const lastElement = focusableArray[focusableArray.length - 1];
+
+            if (event.shiftKey) {
+                // Shift+Tab: if on first element, go to last
+                if (document.activeElement === firstElement) {
+                    event.preventDefault();
+                    lastElement.focus();
+                }
+            } else {
+                // Tab: if on last element, go to first
+                if (document.activeElement === lastElement) {
+                    event.preventDefault();
+                    firstElement.focus();
+                }
             }
         }
     }
 
+    // Toast timeout ID for proper cleanup
+    let toastTimeoutId = null;
+
     /**
-     * Show success toast
+     * Show success toast with proper timer management
      */
     function mostrarToast() {
+        // Clear any existing timeout to prevent premature hiding
+        if (toastTimeoutId) {
+            clearTimeout(toastTimeoutId);
+        }
+        
         elementos.toast.classList.add('mostrar');
-        setTimeout(() => elementos.toast.classList.remove('mostrar'), 3000);
+        toastTimeoutId = setTimeout(() => {
+            elementos.toast.classList.remove('mostrar');
+            toastTimeoutId = null;
+        }, 3000);
     }
 
     // ============================================
@@ -445,6 +492,12 @@
         [elementos.inputNome, elementos.inputCargo, elementos.inputTelefone].forEach(input => {
             if (input) toggleClearButton(input);
         });
+
+        // Hide page loader
+        const pageLoader = document.getElementById('page-loader');
+        if (pageLoader) {
+            pageLoader.classList.add('hidden');
+        }
 
         // Show welcome modal on first visit
         if (!safeGetStorage(STORAGE_KEYS.BOAS_VINDAS)) {

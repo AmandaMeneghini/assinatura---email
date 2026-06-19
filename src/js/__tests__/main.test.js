@@ -339,6 +339,87 @@ describe('Portal de Assinaturas AI/R', () => {
                 const event = new KeyboardEvent('keydown', { key: 'Escape' });
                 expect(() => app.handleModalKeydown(event)).not.toThrow();
             });
+
+            test('should trap focus with Tab key - cycle to first element when on last', () => {
+                const modal = document.getElementById('modalBemVindo');
+                modal.classList.add('mostrar');
+                
+                const buttons = modal.querySelectorAll('button');
+                const lastButton = buttons[buttons.length - 1];
+                lastButton.focus();
+                
+                const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true });
+                Object.defineProperty(event, 'preventDefault', { value: jest.fn() });
+                
+                app.handleModalKeydown(event);
+                
+                expect(event.preventDefault).toHaveBeenCalled();
+                expect(document.activeElement).toBe(buttons[0]);
+            });
+
+            test('should trap focus with Shift+Tab key - cycle to last element when on first', () => {
+                const modal = document.getElementById('modalBemVindo');
+                modal.classList.add('mostrar');
+                
+                const buttons = modal.querySelectorAll('button');
+                const firstButton = buttons[0];
+                firstButton.focus();
+                
+                const event = new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true });
+                Object.defineProperty(event, 'preventDefault', { value: jest.fn() });
+                
+                app.handleModalKeydown(event);
+                
+                expect(event.preventDefault).toHaveBeenCalled();
+                expect(document.activeElement).toBe(buttons[buttons.length - 1]);
+            });
+
+            test('should not prevent default Tab when not on boundary elements', () => {
+                const modal = document.getElementById('modalBemVindo');
+                modal.classList.add('mostrar');
+                
+                // Focus on element that is not first or last
+                document.body.focus();
+                
+                const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true });
+                Object.defineProperty(event, 'preventDefault', { value: jest.fn() });
+                
+                app.handleModalKeydown(event);
+                
+                expect(event.preventDefault).not.toHaveBeenCalled();
+            });
+
+            test('should not prevent default Shift+Tab when not on first element', () => {
+                const modal = document.getElementById('modalBemVindo');
+                modal.classList.add('mostrar');
+                
+                const buttons = modal.querySelectorAll('button');
+                // Focus on the last button (not the first)
+                buttons[buttons.length - 1].focus();
+                
+                const event = new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true });
+                Object.defineProperty(event, 'preventDefault', { value: jest.fn() });
+                
+                app.handleModalKeydown(event);
+                
+                // Should not prevent default because we're not on the first element
+                expect(event.preventDefault).not.toHaveBeenCalled();
+            });
+
+            test('should handle modal with no focusable elements gracefully', () => {
+                // Create a modal with no buttons
+                const emptyModal = document.createElement('div');
+                emptyModal.className = 'modal-backdrop mostrar';
+                emptyModal.id = 'emptyModal';
+                emptyModal.innerHTML = '<div class="modal-conteudo"><p>No buttons here</p></div>';
+                document.body.appendChild(emptyModal);
+                
+                const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true });
+                
+                expect(() => app.handleModalKeydown(event)).not.toThrow();
+                
+                document.body.removeChild(emptyModal);
+            });
         });
 
         describe('mostrarToast', () => {
@@ -357,6 +438,31 @@ describe('Portal de Assinaturas AI/R', () => {
                 
                 jest.advanceTimersByTime(3000);
                 
+                expect(app.elementos.toast.classList.contains('mostrar')).toBe(false);
+            });
+
+            test('should clear previous timer when called multiple times', () => {
+                // First call
+                app.mostrarToast();
+                expect(app.elementos.toast.classList.contains('mostrar')).toBe(true);
+                
+                // Advance 1.5 seconds
+                jest.advanceTimersByTime(1500);
+                
+                // Second call - should reset timer
+                app.mostrarToast();
+                expect(app.elementos.toast.classList.contains('mostrar')).toBe(true);
+                
+                // Advance another 1.5 seconds (total 3s from first call, but only 1.5s from second)
+                jest.advanceTimersByTime(1500);
+                
+                // Toast should still be visible because timer was reset
+                expect(app.elementos.toast.classList.contains('mostrar')).toBe(true);
+                
+                // Advance final 1.5 seconds (now 3s from second call)
+                jest.advanceTimersByTime(1500);
+                
+                // Now it should be hidden
                 expect(app.elementos.toast.classList.contains('mostrar')).toBe(false);
             });
         });
@@ -990,6 +1096,21 @@ describe('Portal de Assinaturas AI/R', () => {
             app.init();
             
             expect(app.elementos.preview.innerHTML).toContain('table');
+        });
+
+        test('should hide page loader on init', () => {
+            // Create page loader element
+            const pageLoader = document.createElement('div');
+            pageLoader.id = 'page-loader';
+            pageLoader.className = 'page-loader';
+            document.body.appendChild(pageLoader);
+            
+            app.init();
+            
+            expect(pageLoader.classList.contains('hidden')).toBe(true);
+            
+            // Cleanup
+            pageLoader.remove();
         });
     });
 
