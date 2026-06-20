@@ -343,6 +343,15 @@ input:checked + .toggle-slider:before {
     overflow-x: auto;
     width: 100%;
     box-sizing: border-box;
+    /* Scroll shadow indicators */
+    background: 
+        linear-gradient(to right, white 30%, transparent),
+        linear-gradient(to right, transparent, white 70%) 100% 0,
+        linear-gradient(to right, rgba(0,0,0,0.1), transparent 15px),
+        linear-gradient(to left, rgba(0,0,0,0.1), transparent 15px) 100% 0;
+    background-repeat: no-repeat;
+    background-size: 40px 100%, 40px 100%, 15px 100%, 15px 100%;
+    background-attachment: local, local, scroll, scroll;
 }
 
 /* ============================================
@@ -469,13 +478,14 @@ input:checked + .toggle-slider:before {
 
     .controles,
     .preview-area {
-        min-width: 100%;
+        min-width: 0;
         width: 100%;
     }
 
     .caixa-assinatura {
         padding: 20px;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     header h1 {
@@ -502,6 +512,17 @@ input:checked + .toggle-slider:before {
         border-radius: 8px;
     }
 
+    .caixa-assinatura {
+        padding: 10px;
+    }
+
+    /* Scale signature preview to fit mobile viewport */
+    .signature-scale-wrapper {
+        transform: scale(0.85);
+        transform-origin: top left;
+        width: 117.65%; /* 100% / 0.85 to compensate for scale */
+    }
+
     .btn-copiar {
         padding: 12px;
         font-size: 14px;
@@ -516,6 +537,28 @@ input:checked + .toggle-slider:before {
         right: 10px;
         left: 10px;
         min-width: auto;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - EXTRA SMALL MOBILE
+   ============================================ */
+@media (max-width: 360px) {
+    .caixa-assinatura {
+        padding: 8px;
+    }
+
+    .signature-scale-wrapper {
+        transform: scale(0.75);
+        width: 133.33%; /* 100% / 0.75 */
+    }
+
+    header h1 {
+        font-size: 18px;
+    }
+
+    .painel {
+        padding: 12px;
     }
 }
 
